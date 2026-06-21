@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/assets_app.dart';
@@ -10,8 +13,10 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../cars/widgets/car_card.dart';
 import '../../cars/views/search_screen.dart';
 import '../../offices/widgets/office_card.dart';
+import '../../offices/views/office_details_screen.dart';
+import '../../offices/services/office_service.dart';
 import '../../home/providers/home_provider.dart';
-import '../../notifications/views/notifications_screen.dart';
+import '../../home/models/banner_model.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../../core/widgets/data_state_view.dart';
 import '../../../core/widgets/shimmer_loading.dart';
@@ -50,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                     radius: 25.r,
                     backgroundImage: session?.office?.image.isNotEmpty == true
                         ? NetworkImage(session!.office!.image)
-                        : const AssetImage(AssetsApp.avitar) as ImageProvider,
+                        : const AssetImage(AssetsApp.logoAppV1) as ImageProvider,
                   ),
                   SizedBox(width: 9.w),
                   Expanded(
@@ -82,112 +87,28 @@ class HomeScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const NotificationsScreen()),
-                    ),
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        CircleAvatar(
-                          radius: 21.r,
-                          backgroundColor: AppColors.primaryLight,
-                          child: Icon(
-                            AppIcons.notification,
-                            color: AppColors.primaryNormal,
-                            size: 20.sp,
-                          ),
-                        ),
-                        PositionedDirectional(
-                          top: -3.h,
-                          end: -2.w,
-                          child: CircleAvatar(
-                            radius: 8.r,
-                            backgroundColor: AppColors.error,
-                            child: Text(
-                              '4',
-                              style: getBoldStyle(size: 9, color: AppColors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SearchScreen()),
-                      ),
-                      child: AbsorbPointer(
-                        child: SizedBox(
-                          height: 48.h,
-                          child: TextField(
-                            textAlignVertical: TextAlignVertical.center,
-                            decoration: InputDecoration(
-                              hintText: l.searchHint,
-                              hintStyle: getRegularStyle(
-                                size: 12,
-                                color: AppColors.hint,
-                              ),
-                              prefixIcon: Icon(
-                                AppIcons.search,
-                                size: 20.sp,
-                                color: AppColors.hint,
-                              ),
-                              isDense: true,
-                              filled: true,
-                              fillColor: AppColors.white,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.r),
-                                borderSide: const BorderSide(
-                                  color: AppColors.border01,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.r),
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryNormal,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  InkWell(
-                    onTap: () => Navigator.push(
-                      context,
                       MaterialPageRoute(builder: (_) => const SearchScreen()),
                     ),
-                    borderRadius: BorderRadius.circular(9.r),
-                    child: Container(
-                      width: 48.w,
-                      height: 48.h,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryNormal,
-                        borderRadius: BorderRadius.circular(9.r),
-                      ),
+                    child: CircleAvatar(
+                      radius: 21.r,
+                      backgroundColor: AppColors.primaryLight,
                       child: Icon(
-                        Icons.tune_rounded,
-                        color: AppColors.white,
-                        size: 23.sp,
+                        AppIcons.search,
+                        color: AppColors.primaryNormal,
+                        size: 20.sp,
                       ),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 17.h),
-              _sectionHeader(
-                l.nearbyCars,
+              ],
+            ),
+            if (homeProvider.banners.isNotEmpty) ...[
+              SizedBox(height: 16.h),
+              _bannerSection(homeProvider.banners),
+              SizedBox(height: 14.h),
+            ],
+            SizedBox(height: 17.h),
+            _sectionHeader(
+              l.nearbyCars,
                 l.showAll,
                 onTap: () => onNavigate?.call(1),
               ),
@@ -199,7 +120,8 @@ class HomeScreen extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         itemCount: 3,
                         separatorBuilder: (_, __) => SizedBox(width: 10.w),
-                        itemBuilder: (_, __) => const CardSkeleton(compact: true),
+                        itemBuilder: (_, __) =>
+                            const CardSkeleton(compact: true),
                       )
                     : cars.isEmpty
                     ? DataStateView(
@@ -288,6 +210,151 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _bannerSection(List<BannerModel> banners) {
+    return _BannerCarousel(banners: banners);
+  }
+}
+
+class _BannerCarousel extends StatefulWidget {
+  final List<BannerModel> banners;
+
+  const _BannerCarousel({required this.banners});
+
+  @override
+  State<_BannerCarousel> createState() => _BannerCarouselState();
+}
+
+class _BannerCarouselState extends State<_BannerCarousel> {
+  late final PageController _pageController;
+  int _currentPage = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (!mounted || widget.banners.length < 2) return;
+      final next = (_currentPage + 1) % widget.banners.length;
+      _pageController.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final banners = widget.banners;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          height: 140.h,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: banners.length,
+            onPageChanged: (i) {
+              setState(() => _currentPage = i);
+              _startTimer();
+            },
+            itemBuilder: (_, index) => Padding(
+              padding: EdgeInsetsDirectional.only(
+                end: index < banners.length - 1 ? 10.w : 0,
+              ),
+              child: _BannerCard(banner: banners[index]),
+            ),
+          ),
+        ),
+        if (banners.length > 1) ...[
+          SizedBox(height: 10.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(banners.length, (index) {
+              final isActive = index == _currentPage;
+              return GestureDetector(
+                onTap: () => _pageController.animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  margin: EdgeInsetsDirectional.only(end: 6.w),
+                  width: isActive ? 24.w : 8.w,
+                  height: 8.h,
+                  decoration: BoxDecoration(
+                    color: isActive
+                        ? AppColors.primaryNormal
+                        : AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _BannerCard extends StatelessWidget {
+  final BannerModel banner;
+
+  const _BannerCard({required this.banner});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        if (banner.officeId != null && banner.officeId!.isNotEmpty) {
+          final office = await OfficeService().getOfficeById(banner.officeId!);
+          if (office != null && context.mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => OfficeDetailsScreen(office: office),
+              ),
+            );
+          }
+        } else {
+          final url = banner.linkUrl;
+          if (url != null && url.isNotEmpty) {
+            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+          }
+        }
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(9.r),
+        child: SizedBox(
+          width: double.infinity,
+          height: 140.h,
+          child: Image.network(
+            banner.imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) =>
+                Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.cover),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -5,22 +5,31 @@ import '../../cars/models/car_model.dart';
 import '../../cars/services/car_service.dart';
 import '../../offices/models/office_model.dart';
 import '../../offices/services/office_service.dart';
+import '../models/banner_model.dart';
+import '../services/banner_service.dart';
 
 class HomeProvider extends ChangeNotifier {
   final OfficeService _officeService;
   final CarService _carService;
+  final BannerService _bannerService;
 
-  HomeProvider({OfficeService? officeService, CarService? carService})
-    : _officeService = officeService ?? OfficeService(),
-      _carService = carService ?? CarService();
+  HomeProvider({
+    OfficeService? officeService,
+    CarService? carService,
+    BannerService? bannerService,
+  }) : _officeService = officeService ?? OfficeService(),
+       _carService = carService ?? CarService(),
+       _bannerService = bannerService ?? BannerService();
 
   List<OfficeModel> _nearbyOffices = const [];
   List<CarModel> _homeCars = const [];
+  List<BannerModel> _banners = const [];
   bool _loading = false;
   String? _error;
 
   List<OfficeModel> get nearbyOffices => _nearbyOffices;
   List<CarModel> get homeCars => _homeCars;
+  List<BannerModel> get banners => _banners;
   bool get loading => _loading;
   String? get error => _error;
 
@@ -32,9 +41,11 @@ class HomeProvider extends ChangeNotifier {
       final results = await Future.wait([
         _officeService.getActiveOffices(),
         _carService.getActiveCars(),
+        _bannerService.getActiveBanners(),
       ]);
       final allOffices = results[0] as List<OfficeModel>;
       final allCars = results[1] as List<CarModel>;
+      _banners = results[2] as List<BannerModel>;
       _nearbyOffices = allOffices.where((office) {
         final matchesCountry =
             country == null ||

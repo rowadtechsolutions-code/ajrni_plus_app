@@ -11,4 +11,5 @@ class AssetsApp {
   static const String avitar = 'assets/images/avitar.png';
   static const String hyundaiAvante = 'assets/images/hyundai_avante.png';
   static const String officeCover = 'assets/images/office_cover.png';
+  static const String logoAppV1 = 'assets/images/logo_app_v1.png';
 }

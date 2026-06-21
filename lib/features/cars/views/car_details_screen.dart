@@ -97,7 +97,7 @@ class CarDetailsScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 10.h),
-                    if (gallery.isNotEmpty)
+                    if (gallery.length > 1)
                       SizedBox(
                         height: 58.h,
                         child: Row(
@@ -466,12 +466,12 @@ class _Spec extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 16.sp, color: AppColors.font01),
+          Icon(icon, size: 18.sp, color: AppColors.font01),
           SizedBox(height: 2.h),
-          Text(title, style: getRegularStyle(size: 9, color: AppColors.font01)),
+          Text(title, style: getRegularStyle(size: 11, color: AppColors.font01)),
           Text(
             value,
-            style: getMediumStyle(size: 10, color: AppColors.primaryNormal),
+            style: getMediumStyle(size: 12, color: AppColors.primaryNormal),
           ),
         ],
       ),

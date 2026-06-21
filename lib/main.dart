@@ -8,12 +8,15 @@ import 'core/l10n/app_localizations.dart';
 import 'core/services/cache/app_preferences.dart';
 import 'core/services/providers/language_provider.dart';
 import 'core/theme/app_colors.dart';
+import 'core/widgets/connectivity_listener.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/cars/providers/cars_provider.dart';
 import 'features/favorites/providers/favorites_provider.dart';
 import 'features/home/providers/home_provider.dart';
 import 'features/offices/providers/offices_provider.dart';
 import 'features/get_start/views/splash_screen.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +50,8 @@ void main() async {
   );
 
   runApp(const MyApp());
+
+  ConnectivityController.init(navigatorKey);
 }
 
 class MyApp extends StatelessWidget {
@@ -82,6 +87,7 @@ class MyMaterialApp extends StatelessWidget {
     return Consumer<LanguageProvider>(
       builder: (context, lang, child) {
         return MaterialApp(
+          navigatorKey: navigatorKey,
           theme: ThemeData(
             fontFamily: 'ibmPlexSansArabic',
             primaryColor: AppColors.primaryNormal,
