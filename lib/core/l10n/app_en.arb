@@ -1,0 +1,118 @@
+{
+  "appName": "Ajrni Plus",
+  "tagline": "Rent your next car from trusted offices",
+  "marketTagline": "Daily and monthly rental cars in Oman and the GCC",
+  "hire" : "Hire",
+  "yourCarEasily": "Your car easily",
+  "fromTrustedOffices": "From Trusted\noffices",
+  "logInToYourAccount": "Log in to your account",
+  "supTitleLogin": "Enter your email address and password to log in to your account.",
+  "email" : "Email",
+  "password" : "Password",
+  "didYouForgetYourPassword":"Did you forget your password?",
+  "login": "Login",
+  "register" : "Register",
+  "registerNow" : "Register now",
+  "createNewAccountQues" : "Create a new account?",
+  "logInAsAVisitor": "Continue as guest",
+  "createNewAccount": "Create a new account",
+  "registerSubtitle": "Create your account and enjoy a fast, easy rental experience",
+  "user": "User",
+  "officeOwner": "Rental office",
+  "fullName": "Full name",
+  "commercialRegistration": "Commercial registration number",
+  "phoneNumber": "Phone number",
+  "country": "Country",
+  "city": "City",
+  "confirmPassword": "Confirm password",
+  "createAccount": "Create account",
+  "alreadyHaveAccount": "Already have an account?",
+  "welcomeBack": "Happy to have you with us 👋",
+  "searchHint": "Search...",
+  "nearbyCars": "Latest rental cars near you",
+  "nearbyOffices": "Latest rental offices near you",
+  "showAll": "Show all",
+  "home": "Home",
+  "cars": "Cars",
+  "offices": "Offices",
+  "favorites": "Favorites",
+  "myAccount": "My account",
+  "available": "Available",
+  "bookNow": "Book now",
+  "perDay": "per day",
+  "call": "Call",
+  "whatsapp": "WhatsApp",
+  "officeDetails": "Office details",
+  "carDetails": "Car details",
+  "officeCars": "Office cars",
+  "specifications": "Specifications",
+  "model": "Model",
+  "year": "Year",
+  "fuel": "Fuel",
+  "transmission": "Transmission",
+  "automatic": "Automatic",
+  "gasoline": "Gasoline",
+  "account": "Account",
+  "personalData": "Edit your personal information",
+  "myRequests": "My requests",
+  "language": "Language",
+  "arabic": "Arabic",
+  "accountSettings": "Account settings",
+  "changePassword": "Change password",
+  "deleteAccount": "Delete account",
+  "noResults": "No matching results yet",
+  "noResultsSubtitle": "No matching data was found. Use search or filters and try again.",
+  "tryNow": "Try now",
+  "officeName": "Al Khaleej Office",
+  "officeDescription": "Al Khaleej is a trusted car rental office",
+  "locationValue": "Muscat - Oman",
+  "carName": "Hyundai Avante 2024",
+  "dailyPrice": "OMR 11",
+  "userDisplayName": "Saeed bin Mohammed",
+  "emailHint": "Enter your email, e.g. example@gmail.com",
+  "passwordHint": "Enter your password"
+  ,"searchAndFilter": "Search and filter"
+  ,"logout": "Log out"
+  ,"fieldRequired": "This field is required"
+  ,"invalidName": "Enter a valid name of at least 3 characters"
+  ,"invalidEmail": "Enter a valid email address"
+  ,"invalidPhone": "Enter a valid phone number for the selected country"
+  ,"weakPassword": "Password must be at least 6 characters"
+  ,"passwordMismatch": "Passwords do not match"
+  ,"selectCountryAndCity": "Select country and city"
+  ,"invalidCommercialRegistration": "Enter a valid commercial registration number"
+  ,"accountCreated": "Account created successfully"
+  ,"confirmEmailMessage": "Account created. Confirm your email, then sign in"
+  ,"loginFailed": "Sign in failed. Check your details and try again"
+  ,"registrationFailed": "Account creation failed. Try again"
+  ,"officePending": "The office account is awaiting activation"
+  ,"chooseCountry": "Choose country"
+  ,"chooseCity": "Choose city"
+  ,"passwordResetSent": "A password reset link was sent to your email"
+  ,"invalidCredentials": "The email or password is incorrect"
+  ,"emailNotConfirmed": "Confirm your email before signing in"
+  ,"emailAlreadyRegistered": "This email address is already registered"
+  ,"serviceConfigurationError": "Unable to connect to the service. Check the app configuration"
+  ,"networkError": "Unable to connect. Check your network and try again"
+  ,"tooManyAttempts": "Too many attempts. Wait a moment and try again"
+  ,"unexpectedError": "An unexpected error occurred. Try again"
+  ,"guest": "Guest"
+  ,"contactUs": "Contact us"
+  ,"aboutAjrni": "About Ajrni Plus"
+  ,"privacyPolicy": "Privacy policy"
+  ,"termsAndConditions": "Terms and conditions"
+  ,"confirmLogoutTitle": "Log out"
+  ,"confirmLogoutMessage": "Are you sure you want to log out?"
+  ,"confirmDeleteTitle": "Delete account"
+  ,"confirmDeleteMessage": "Your account and data will be permanently deleted. This action cannot be undone."
+  ,"cancel": "Cancel"
+  ,"confirm": "Confirm"
+  ,"saveChanges": "Save changes"
+  ,"profileUpdated": "Your information was updated successfully"
+  ,"loginToContinue": "Sign in to use all app features"
+  ,"selectLanguage": "Choose language"
+  ,"myRequestsEmpty": "You do not have any booking requests yet."
+  ,"notifications": "Notifications"
+  ,"noNotifications": "No notifications yet"
+
+}

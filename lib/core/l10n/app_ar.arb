@@ -1,0 +1,118 @@
+{
+  "appName": "أجرني بلس",
+  "tagline": "استأجر سيارتك بسهولة من مكاتب موثوقة",
+  "marketTagline": "سيارات للإيجار اليومي والشهري في عُمان والخليج",
+  "hire" : "استأجر",
+  "yourCarEasily": "سيارتك بسهولة",
+  "fromTrustedOffices": "من مكاتب\nموثوقة",
+  "logInToYourAccount": "تسجيل الدخول إلى حسابك",
+  "supTitleLogin": "قم بإدخال بريدك الإلكتروني وكلمة المرور لتسجيل الدخول إلى حسابك.",
+  "email" : "البريد الالكتروني",
+  "password" : "كلمة المرور",
+  "didYouForgetYourPassword":"هل نسيت كلمة المرور الخاصة بك؟",
+  "login": "تسجيل الدخول",
+  "register" : "إنشاء حساب",
+  "registerNow" : "سجل الأن",
+  "createNewAccountQues" : "إنشاء حساب جديد؟",
+  "logInAsAVisitor": "الدخول كزائر",
+  "createNewAccount": "إنشاء حساب جديد",
+  "registerSubtitle": "أنشئ حسابك الآن واستمتع بتجربة استئجار سهلة وسريعة",
+  "user": "مستخدم",
+  "officeOwner": "مكتب تأجير",
+  "fullName": "اسم المستخدم",
+  "commercialRegistration": "رقم السجل التجاري",
+  "phoneNumber": "رقم الجوال",
+  "country": "الدولة",
+  "city": "المدينة",
+  "confirmPassword": "تأكيد كلمة المرور",
+  "createAccount": "إنشاء حساب",
+  "alreadyHaveAccount": "هل لديك حساب من قبل؟",
+  "welcomeBack": "سعداء بوجودك معنا 👋",
+  "searchHint": "بحث عن ...",
+  "nearbyCars": "أحدث سيارات الإيجار القريبة منك",
+  "nearbyOffices": "أحدث مكاتب الإيجار القريبة منك",
+  "showAll": "عرض الكل",
+  "home": "الرئيسية",
+  "cars": "السيارات",
+  "offices": "المكاتب",
+  "favorites": "المفضلة",
+  "myAccount": "حسابي",
+  "available": "متاح",
+  "bookNow": "إحجز الآن",
+  "perDay": "باليوم",
+  "call": "اتصال",
+  "whatsapp": "واتساب",
+  "officeDetails": "تفاصيل المكتب",
+  "carDetails": "تفاصيل السيارة",
+  "officeCars": "سيارات المكتب",
+  "specifications": "المواصفات",
+  "model": "الموديل",
+  "year": "السنة",
+  "fuel": "الوقود",
+  "transmission": "ناقل الحركة",
+  "automatic": "اوتوماتيك",
+  "gasoline": "بنزين",
+  "account": "الحساب",
+  "personalData": "تعديل بياناتك الشخصية",
+  "myRequests": "طلباتي",
+  "language": "اللغة",
+  "arabic": "عربي",
+  "accountSettings": "إعدادات الحساب",
+  "changePassword": "تغيير كلمة المرور",
+  "deleteAccount": "حذف الحساب",
+  "noResults": "لا توجد نتائج متطابقة الآن",
+  "noResultsSubtitle": "لم يتم العثور على بيانات مطابقة. استخدم البحث أو الفلاتر وحاول مرة أخرى.",
+  "tryNow": "تحقق الآن",
+  "officeName": "مكتب الخليج",
+  "officeDescription": "مكتب الخليج أفضل مكتب لتأجير السيارات",
+  "locationValue": "مسقط - عمان",
+  "carName": "هيونداي أفانتي 2024",
+  "dailyPrice": "11 ر.ع",
+  "userDisplayName": "سعيد بن محمد",
+  "emailHint": "أدخل بريدك الإلكتروني مثال: example@gmail.com",
+  "passwordHint": "أدخل كلمة المرور الخاصة بك"
+  ,"searchAndFilter": "البحث والتصفية"
+  ,"logout": "تسجيل الخروج"
+  ,"fieldRequired": "هذا الحقل مطلوب"
+  ,"invalidName": "أدخل اسمًا صحيحًا من 3 أحرف على الأقل"
+  ,"invalidEmail": "أدخل بريدًا إلكترونيًا صحيحًا"
+  ,"invalidPhone": "أدخل رقم جوال صحيحًا حسب الدولة المختارة"
+  ,"weakPassword": "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+  ,"passwordMismatch": "كلمتا المرور غير متطابقتين"
+  ,"selectCountryAndCity": "اختر الدولة والمدينة"
+  ,"invalidCommercialRegistration": "أدخل رقم سجل تجاري صحيحًا"
+  ,"accountCreated": "تم إنشاء الحساب بنجاح"
+  ,"confirmEmailMessage": "تم إنشاء الحساب. تحقق من بريدك الإلكتروني ثم سجل الدخول"
+  ,"loginFailed": "تعذر تسجيل الدخول. تحقق من البيانات وحاول مرة أخرى"
+  ,"registrationFailed": "تعذر إنشاء الحساب. حاول مرة أخرى"
+  ,"officePending": "حساب المكتب بانتظار التفعيل"
+  ,"chooseCountry": "اختر الدولة"
+  ,"chooseCity": "اختر المدينة"
+  ,"passwordResetSent": "تم إرسال رابط استعادة كلمة المرور إلى بريدك"
+  ,"invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+  ,"emailNotConfirmed": "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول"
+  ,"emailAlreadyRegistered": "هذا البريد الإلكتروني مسجل مسبقًا"
+  ,"serviceConfigurationError": "تعذر الاتصال بالخدمة. تحقق من إعدادات التطبيق"
+  ,"networkError": "تعذر الاتصال بالإنترنت. تحقق من الشبكة وحاول مرة أخرى"
+  ,"tooManyAttempts": "محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى"
+  ,"unexpectedError": "حدث خطأ غير متوقع. حاول مرة أخرى"
+  ,"guest": "زائر"
+  ,"contactUs": "تواصل معنا"
+  ,"aboutAjrni": "عن أجرني بلس"
+  ,"privacyPolicy": "سياسة الخصوصية"
+  ,"termsAndConditions": "الشروط والأحكام"
+  ,"confirmLogoutTitle": "تسجيل الخروج"
+  ,"confirmLogoutMessage": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
+  ,"confirmDeleteTitle": "حذف الحساب"
+  ,"confirmDeleteMessage": "سيتم حذف حسابك وبياناتك نهائيًا ولا يمكن التراجع عن هذا الإجراء."
+  ,"cancel": "إلغاء"
+  ,"confirm": "تأكيد"
+  ,"saveChanges": "حفظ التعديلات"
+  ,"profileUpdated": "تم تحديث بياناتك بنجاح"
+  ,"loginToContinue": "سجل الدخول للاستفادة من جميع مزايا التطبيق"
+  ,"selectLanguage": "اختر اللغة"
+  ,"myRequestsEmpty": "لا توجد طلبات حجز مسجلة حتى الآن."
+  ,"notifications": "الإشعارات"
+  ,"noNotifications": "لا توجد إشعارات حاليًا"
+
+}
