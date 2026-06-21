@@ -238,29 +238,35 @@ class ProfileScreen extends StatelessWidget {
 
   Future<void> _deleteAccount(BuildContext context) async {
     final l = AppLocalizations.of(context)!;
-    final confirmed = await showConfirmationDialog(
+    await showDialog<void>(
       context: context,
-      title: l.confirmDeleteTitle,
-      message: l.confirmDeleteMessage,
-      confirmText: l.confirm,
-      cancelText: l.cancel,
-      destructive: true,
-    );
-    if (!confirmed || !context.mounted) return;
-    try {
-      await AuthService().deleteCurrentAccount();
-      if (!context.mounted) return;
-      context.read<AuthProvider>().clear();
-      _toWelcome(context);
-    } catch (_) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l.unexpectedError),
-          backgroundColor: AppColors.error,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppColors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.r),
         ),
-      );
-    }
+        title: Text(
+          l.confirmDeleteTitle,
+          textAlign: TextAlign.center,
+          style: getSemiBoldStyle(size: 18, color: AppColors.black10),
+        ),
+        content: Text(
+          l.contactAdministrationToDelete,
+          textAlign: TextAlign.center,
+          style: getRegularStyle(size: 13, color: AppColors.font01),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              l.understood,
+              style: getSemiBoldStyle(size: 14, color: AppColors.primaryNormal),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _toWelcome(BuildContext context) {

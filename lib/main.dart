@@ -39,13 +39,16 @@ void main() async {
   //   }
   // });
 
-  /// Initialize system ui
+  /// Initialize system ui (Instagram-style edge-to-edge)
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
+      systemStatusBarContrastEnforced: false,
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarContrastEnforced: false,
     ),
   );
 

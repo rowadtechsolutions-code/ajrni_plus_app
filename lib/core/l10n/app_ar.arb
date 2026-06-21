@@ -114,5 +114,8 @@
   ,"myRequestsEmpty": "لا توجد طلبات حجز مسجلة حتى الآن."
   ,"notifications": "الإشعارات"
   ,"noNotifications": "لا توجد إشعارات حاليًا"
+  ,"accountDeletionFailed": "تعذر حذف الحساب الآن. أعد المحاولة بعد تحديث الخدمة."
+  ,"contactAdministrationToDelete": "يرجى مراجعة إدارة أجرني بلس لحذف حسابك."
+  ,"understood": "حسنًا"
 
 }

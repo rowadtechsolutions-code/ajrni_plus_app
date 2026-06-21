@@ -361,4 +361,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noNotifications => 'لا توجد إشعارات حاليًا';
+
+  @override
+  String get accountDeletionFailed =>
+      'تعذر حذف الحساب الآن. أعد المحاولة بعد تحديث الخدمة.';
+
+  @override
+  String get contactAdministrationToDelete =>
+      'يرجى مراجعة إدارة أجرني بلس لحذف حسابك.';
+
+  @override
+  String get understood => 'حسنًا';
 }

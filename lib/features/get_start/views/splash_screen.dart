@@ -11,7 +11,7 @@ import '../../../core/enums/enums.dart';
 import '../../../core/services/cache/app_preferences.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/services/auth_service.dart';
-import '../../auth/admin/views/admin_screen.dart';
+import '../../dealer/views/dealer_dashboard_screen.dart';
 import '../../home/views/main_home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> with NavHelper {
                 ? const MainHomeScreen()
                 : const WelcomeScreen()
           : session.type == AccountType.office
-          ? const AdminScreen()
+          ? const DealerDashboardScreen()
           : const MainHomeScreen(),
       true,
     );

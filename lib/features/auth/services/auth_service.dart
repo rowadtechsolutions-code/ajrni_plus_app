@@ -150,7 +150,21 @@ class AuthService {
   }
 
   Future<void> deleteCurrentAccount() async {
-    await _client.rpc('delete_current_user');
+    try {
+      final deleted = await _client.rpc('delete_user_account');
+      if (deleted != true) {
+        throw const AuthException('account deletion failed');
+      }
+    } on PostgrestException catch (error) {
+      // Compatibility with databases that still have the previous RPC name.
+      if (error.code == 'PGRST202' ||
+          error.message.toLowerCase().contains('could not find the function')) {
+        await _client.rpc('delete_current_user');
+      } else {
+        rethrow;
+      }
+    }
+    await _client.auth.signOut(scope: SignOutScope.local);
     await AppPreferences().removeSession();
   }
 

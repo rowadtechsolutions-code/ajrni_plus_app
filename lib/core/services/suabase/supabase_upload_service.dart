@@ -9,14 +9,18 @@ class SupabaseUploadService {
     required File file,
     required String bucket,
     required String folder,
+    String? fileNamePrefix,
   }) async {
     try {
       if (!await file.exists()) {
         throw Exception('الملف غير موجود');
       }
 
-      final fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_${p.basename(file.path)}';
+      final extension = p.extension(file.path);
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileName = fileNamePrefix == null
+          ? '${timestamp}_${p.basename(file.path)}'
+          : '$fileNamePrefix-$timestamp$extension';
 
       final filePath = '$folder/$fileName';
 
@@ -44,6 +48,22 @@ class SupabaseUploadService {
       return response.isNotEmpty;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<bool> deleteUrl({required String url, required String bucket}) async {
+    if (url.trim().isEmpty || !url.startsWith('http')) return true;
+    final path = extractPathFromUrl(url, bucket);
+    if (path.isEmpty) return true;
+    return deleteFile(bucket: bucket, filePath: path);
+  }
+
+  Future<void> deleteUrls({
+    required Iterable<String> urls,
+    required String bucket,
+  }) async {
+    for (final url in urls.toSet()) {
+      await deleteUrl(url: url, bucket: bucket);
     }
   }
 

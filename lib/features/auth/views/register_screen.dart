@@ -27,14 +27,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  static const _gulfCodes = [
-    '+968',
-    '+966',
-    '+971',
-    '+965',
-    '+974',
-    '+973',
-  ];
+  static const _gulfCodes = ['+968', '+966', '+971', '+965', '+974', '+973'];
 
   static const _codeToCountry = {
     '+968': 'OM',
@@ -374,7 +367,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           type: _isOffice ? AccountType.office : AccountType.user,
           name: _nameController.text,
           email: _emailController.text,
-          phoneNumber: FormValidators.normalizePhone('$_phoneCode${_phoneController.text}'),
+          phoneNumber: FormValidators.normalizePhone(
+            '$_phoneCode${_phoneController.text}',
+          ),
           country: _country!,
           city: _city!,
           password: _passwordController.text,

@@ -365,4 +365,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noNotifications => 'No notifications yet';
+
+  @override
+  String get accountDeletionFailed =>
+      'The account could not be deleted now. Try again after the service is updated.';
+
+  @override
+  String get contactAdministrationToDelete =>
+      'Please contact Ajrni Plus administration to delete your account.';
+
+  @override
+  String get understood => 'OK';
 }

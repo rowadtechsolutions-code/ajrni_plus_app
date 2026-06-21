@@ -787,6 +787,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'لا توجد إشعارات حاليًا'**
   String get noNotifications;
+
+  /// No description provided for @accountDeletionFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر حذف الحساب الآن. أعد المحاولة بعد تحديث الخدمة.'**
+  String get accountDeletionFailed;
+
+  /// No description provided for @contactAdministrationToDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى مراجعة إدارة أجرني بلس لحذف حسابك.'**
+  String get contactAdministrationToDelete;
+
+  /// No description provided for @understood.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسنًا'**
+  String get understood;
 }
 
 class _AppLocalizationsDelegate

@@ -13,6 +13,9 @@ class CarModel {
   final String fuel;
   final int? seats;
   final String color;
+  final String plateNumber;
+  final String rentalType;
+  final String status;
   final num? dailyPrice;
   final String currency;
   final bool isActive;
@@ -32,6 +35,9 @@ class CarModel {
     this.fuel = '',
     this.seats,
     this.color = '',
+    this.plateNumber = '',
+    this.rentalType = 'daily',
+    this.status = 'available',
     this.dailyPrice,
     this.currency = 'OMR',
     this.isActive = true,
@@ -108,6 +114,10 @@ class CarModel {
         'passengers',
       ]),
       color: _value(json, ['color', 'car_color']) ?? '',
+      plateNumber:
+          _value(json, ['plate_number', 'plate', 'registration_number']) ?? '',
+      rentalType: _value(json, ['rental_type']) ?? 'daily',
+      status: _value(json, ['status']) ?? 'available',
       dailyPrice: _numValue(json, [
         'daily_price',
         'price_per_day',
@@ -151,6 +161,9 @@ class CarModel {
       fuel: fuel,
       seats: seats,
       color: color,
+      plateNumber: plateNumber,
+      rentalType: rentalType,
+      status: status,
       dailyPrice: dailyPrice,
       currency: currency,
       isActive: isActive,

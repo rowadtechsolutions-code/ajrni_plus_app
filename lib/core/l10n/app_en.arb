@@ -114,5 +114,8 @@
   ,"myRequestsEmpty": "You do not have any booking requests yet."
   ,"notifications": "Notifications"
   ,"noNotifications": "No notifications yet"
+  ,"accountDeletionFailed": "The account could not be deleted now. Try again after the service is updated."
+  ,"contactAdministrationToDelete": "Please contact Ajrni Plus administration to delete your account."
+  ,"understood": "OK"
 
 }

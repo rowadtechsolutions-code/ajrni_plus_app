@@ -3,6 +3,7 @@ import 'package:arini_plus_app/core/helpers/location_matcher.dart';
 import 'package:arini_plus_app/core/services/contact_launcher_service.dart';
 import 'package:arini_plus_app/features/cars/models/car_model.dart';
 import 'package:arini_plus_app/features/offices/models/office_model.dart';
+import 'package:arini_plus_app/features/dealer/data/car_brands_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -82,6 +83,22 @@ void main() {
     expect(LocationMatcher.country('Oman', 'OM'), isTrue);
     expect(LocationMatcher.city('مسقط', 'مسقط'), isTrue);
     expect(LocationMatcher.city('مسقط', 'صلالة'), isFalse);
+  });
+
+  test('dealer brands provide scoped models and working selections', () {
+    final toyota = CarBrandsData.byName('Toyota');
+    final nissan = CarBrandsData.byName('Nissan');
+
+    expect(toyota, isNotNull);
+    expect(toyota!.models, containsAll(['Camry', 'Corolla', 'Yaris', 'Prado']));
+    expect(nissan!.models, containsAll(['Sunny', 'Altima', 'Patrol']));
+    expect(toyota.models, isNot(contains('Patrol')));
+    expect(CarBrandsData.brands.length, greaterThanOrEqualTo(30));
+    for (final brand in CarBrandsData.brands) {
+      expect(brand.logoUrl, startsWith('https://'));
+      expect(brand.models, isNotEmpty);
+      expect(brand.models.toSet().length, brand.models.length);
+    }
   });
 
   test('normalizes Gulf phone to international WhatsApp format', () {

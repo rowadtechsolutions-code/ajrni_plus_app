@@ -24,14 +24,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  static const _gulfCodes = [
-    '+968',
-    '+966',
-    '+971',
-    '+965',
-    '+974',
-    '+973',
-  ];
+  static const _gulfCodes = ['+968', '+966', '+971', '+965', '+974', '+973'];
 
   static const _codeToCountry = {
     '+968': 'OM',
@@ -57,7 +50,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final session = context.read<AuthProvider>().session!;
     _nameController = TextEditingController(text: session.displayName);
     _emailController = TextEditingController(text: session.email);
-    final existingPhone = session.user?.phoneNumber ?? session.office?.phoneNumber ?? '';
+    final existingPhone =
+        session.user?.phoneNumber ?? session.office?.phoneNumber ?? '';
     _country = session.user?.country ?? session.office?.country;
     _city = session.user?.city ?? session.office?.city;
     _phoneCode = '+968';
@@ -255,7 +249,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (session.user != null) {
         final user = session.user!.copyWith(
           fullName: _nameController.text.trim(),
-          phoneNumber: FormValidators.normalizePhone('$_phoneCode${_phoneController.text}'),
+          phoneNumber: FormValidators.normalizePhone(
+            '$_phoneCode${_phoneController.text}',
+          ),
           country: _country,
           city: _city,
         );
@@ -264,7 +260,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       } else {
         final office = session.office!.copyWith(
           officeName: _nameController.text.trim(),
-          phoneNumber: FormValidators.normalizePhone('$_phoneCode${_phoneController.text}'),
+          phoneNumber: FormValidators.normalizePhone(
+            '$_phoneCode${_phoneController.text}',
+          ),
           country: _country,
           city: _city,
         );

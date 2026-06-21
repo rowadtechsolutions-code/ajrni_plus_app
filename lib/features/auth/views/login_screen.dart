@@ -19,7 +19,7 @@ import '../widgets/auth_heder_section.dart';
 import '../widgets/bg_image_widget.dart';
 import '../services/auth_service.dart';
 import '../providers/auth_provider.dart';
-import '../admin/views/admin_screen.dart';
+import '../../dealer/views/dealer_dashboard_screen.dart';
 import '../helpers/auth_error_mapper.dart';
 import '../../home/views/main_home_screen.dart';
 import 'register_screen.dart';
@@ -225,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> with NavHelper {
       if (!mounted) return;
       provider.setSession(session);
       final target = session.type == AccountType.office
-          ? const AdminScreen()
+          ? const DealerDashboardScreen()
           : const MainHomeScreen();
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => target),

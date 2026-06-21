@@ -34,6 +34,12 @@ class AuthErrorMapper {
     if (value.contains('rate limit') || value.contains('too many requests')) {
       return l.tooManyAttempts;
     }
+    if (value.contains('delete_user_account') ||
+        value.contains('delete_current_user') ||
+        value.contains('account deletion failed') ||
+        value.contains('could not find the function')) {
+      return l.accountDeletionFailed;
+    }
     return l.unexpectedError;
   }
 }

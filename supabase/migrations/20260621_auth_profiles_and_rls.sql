@@ -142,8 +142,18 @@ language plpgsql
 security definer
 set search_path = public, auth
 as $$
+declare
+  current_user_id uuid := auth.uid();
 begin
-  delete from auth.users where id = auth.uid();
+  if current_user_id is null then
+    raise exception 'Authentication required';
+  end if;
+
+  delete from public."Users"
+  where id = current_user_id;
+
+  delete from auth.users
+  where id = current_user_id;
 end;
 $$;
 

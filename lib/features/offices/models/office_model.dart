@@ -66,29 +66,37 @@ class OfficeModel {
     'phone_number': phoneNumber.trim(),
     'country': country,
     'city': city,
+    'bio': bio.trim(),
+    'image': image,
+    'cover': cover,
     'commercial_registration_number': commercialRegistrationNumber.trim(),
   };
 
   OfficeModel copyWith({
     String? officeName,
+    String? email,
     String? phoneNumber,
     String? country,
     String? city,
     String? bio,
+    String? image,
+    String? cover,
+    String? commercialRegistrationNumber,
   }) {
     return OfficeModel(
       id: id,
       createdAt: createdAt,
       officeName: officeName ?? this.officeName,
-      email: email,
+      email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       country: country ?? this.country,
       city: city ?? this.city,
       isActive: isActive,
       bio: bio ?? this.bio,
-      image: image,
-      cover: cover,
-      commercialRegistrationNumber: commercialRegistrationNumber,
+      image: image ?? this.image,
+      cover: cover ?? this.cover,
+      commercialRegistrationNumber:
+          commercialRegistrationNumber ?? this.commercialRegistrationNumber,
     );
   }
 
