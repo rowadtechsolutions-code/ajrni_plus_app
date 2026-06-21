@@ -7,6 +7,7 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/my_button.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../../core/services/contact_launcher_service.dart';
 import '../views/office_details_screen.dart';
 import '../models/office_model.dart';
@@ -140,17 +141,23 @@ class OfficeCard extends StatelessWidget with NavHelper {
 
   Widget _officeAvatar() {
     final image = office?.image.trim() ?? '';
-    return CircleAvatar(
-      radius: 24.r,
-      backgroundColor: AppColors.surfaceBlue,
-      backgroundImage: image.isNotEmpty ? NetworkImage(image) : null,
-      child: image.isEmpty
-          ? Icon(
+    return ClipOval(
+      child: SizedBox.square(
+        dimension: 48.r,
+        child: AppNetworkImage(
+          url: image,
+          memoryCacheWidth: 144,
+          diskCacheWidth: 288,
+          fallback: ColoredBox(
+            color: AppColors.surfaceBlue,
+            child: Icon(
               AppIcons.officeBold,
               color: AppColors.primaryNormal,
               size: 24.sp,
-            )
-          : null,
+            ),
+          ),
+        ),
+      ),
     );
   }
 

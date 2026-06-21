@@ -70,7 +70,7 @@ class AuthService {
       throw const AuthException('تعذر إنشاء الحساب، حاول مرة أخرى.');
     }
 
-    AccountSession session;
+    AccountSession fallbackSession;
     if (data.type == AccountType.office) {
       final office = OfficeModel(
         id: authUser.id,
@@ -81,8 +81,7 @@ class AuthService {
         city: data.city,
         commercialRegistrationNumber: data.commercialRegistrationNumber,
       );
-      session = AccountSession.office(office);
-      if (response.session != null) await _offices.upsertOffice(office);
+      fallbackSession = AccountSession.office(office);
     } else {
       final user = UserModel(
         id: authUser.id,
@@ -92,13 +91,26 @@ class AuthService {
         country: data.country,
         city: data.city,
       );
-      session = AccountSession.user(user);
-      if (response.session != null) await _users.upsertUser(user);
+      fallbackSession = AccountSession.user(user);
     }
 
     if (response.session == null) {
       return const RegistrationResult(needsEmailConfirmation: true);
     }
+
+    // The database trigger normally creates the profile with the Auth user.
+    // Avoid a redundant upsert because it can fail under RLS even though the
+    // registration itself succeeded.
+    var session = await loadAccount(authUser.id);
+    if (session == null) {
+      if (fallbackSession.office != null) {
+        await _offices.upsertOffice(fallbackSession.office!);
+      } else {
+        await _users.upsertUser(fallbackSession.user!);
+      }
+      session = await loadAccount(authUser.id) ?? fallbackSession;
+    }
+
     await _cacheSession(session);
     return RegistrationResult(session: session);
   }

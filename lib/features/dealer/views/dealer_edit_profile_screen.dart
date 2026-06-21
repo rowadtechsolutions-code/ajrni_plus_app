@@ -14,6 +14,7 @@ import '../../../core/widgets/custom_app_bar.dart';
 import '../../../core/widgets/my_button.dart';
 import '../../../core/widgets/my_lable_text_fild.dart';
 import '../../../core/widgets/selection_bottom_sheet.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../../data/country_city_data.dart';
 import '../../auth/models/account_session.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -94,9 +95,14 @@ class _DealerEditProfileScreenState extends State<DealerEditProfileScreen>
                               child: _cover != null
                                   ? Image.file(_cover!, fit: BoxFit.cover)
                                   : office.cover.startsWith('http')
-                                  ? Image.network(
-                                      office.cover,
+                                  ? AppNetworkImage(
+                                      url: office.cover,
                                       fit: BoxFit.cover,
+                                      memoryCacheWidth: 1000,
+                                      diskCacheWidth: 1600,
+                                      fallback: const ColoredBox(
+                                        color: AppColors.primaryLight,
+                                      ),
                                     )
                                   : Container(
                                       color: AppColors.primaryLight,
@@ -122,23 +128,25 @@ class _DealerEditProfileScreenState extends State<DealerEditProfileScreen>
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          CircleAvatar(
-                            radius: 44.r,
-                            backgroundColor: AppColors.primaryLight,
-                            backgroundImage: _logo != null
-                                ? FileImage(_logo!)
-                                : office.image.startsWith('http')
-                                ? NetworkImage(office.image)
-                                : null,
-                            child:
-                                _logo == null &&
-                                    !office.image.startsWith('http')
-                                ? Icon(
-                                    AppIcons.officeBold,
-                                    size: 28.sp,
-                                    color: AppColors.primaryNormal,
-                                  )
-                                : null,
+                          ClipOval(
+                            child: SizedBox.square(
+                              dimension: 88.r,
+                              child: _logo != null
+                                  ? Image.file(_logo!, fit: BoxFit.cover)
+                                  : AppNetworkImage(
+                                      url: office.image,
+                                      memoryCacheWidth: 264,
+                                      diskCacheWidth: 528,
+                                      fallback: ColoredBox(
+                                        color: AppColors.primaryLight,
+                                        child: Icon(
+                                          AppIcons.officeBold,
+                                          size: 28.sp,
+                                          color: AppColors.primaryNormal,
+                                        ),
+                                      ),
+                                    ),
+                            ),
                           ),
                           PositionedDirectional(
                             bottom: -2.h,

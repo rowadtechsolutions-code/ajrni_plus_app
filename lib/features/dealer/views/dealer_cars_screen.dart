@@ -10,6 +10,7 @@ import '../../../core/widgets/confirmation_dialog.dart';
 import '../../../core/widgets/data_state_view.dart';
 import '../../../core/widgets/my_button.dart';
 import '../../../core/widgets/shimmer_loading.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../cars/models/car_model.dart';
 import '../helpers/dealer_text.dart';
@@ -210,10 +211,12 @@ class _DealerCarCard extends StatelessWidget {
               width: 88.w,
               height: 76.h,
               child: car.image.startsWith('http')
-                  ? Image.network(
-                      car.image,
+                  ? AppNetworkImage(
+                      url: car.image,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Image.asset(
+                      memoryCacheWidth: 300,
+                      diskCacheWidth: 600,
+                      fallback: Image.asset(
                         AssetsApp.hyundaiAvante,
                         fit: BoxFit.cover,
                       ),

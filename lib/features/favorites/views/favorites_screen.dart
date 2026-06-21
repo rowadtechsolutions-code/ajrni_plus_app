@@ -45,14 +45,37 @@ class FavoritesScreen extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(AppIcons.heart, size: 54.sp, color: AppColors.secondaryNormal),
+                          Icon(
+                            AppIcons.heart,
+                            size: 54.sp,
+                            color: AppColors.secondaryNormal,
+                          ),
                           SizedBox(height: 14.h),
-                          Text('أنت تستخدم التطبيق كزائر', textAlign: TextAlign.center, style: getSemiBoldStyle(size: 16, color: AppColors.black10)),
+                          Text(
+                            'أنت تستخدم التطبيق كزائر',
+                            textAlign: TextAlign.center,
+                            style: getSemiBoldStyle(
+                              size: 16,
+                              color: AppColors.black10,
+                            ),
+                          ),
                           SizedBox(height: 8.h),
-                          Text('سجّل الدخول للوصول إلى سياراتك المفضلة', textAlign: TextAlign.center, style: getRegularStyle(size: 13, color: AppColors.font01)),
+                          Text(
+                            'سجّل الدخول للوصول إلى سياراتك المفضلة',
+                            textAlign: TextAlign.center,
+                            style: getRegularStyle(
+                              size: 13,
+                              color: AppColors.font01,
+                            ),
+                          ),
                           SizedBox(height: 18.h),
                           FilledButton.icon(
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen())),
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const LoginScreen(),
+                              ),
+                            ),
                             icon: const Icon(AppIcons.login),
                             label: Text(l.login),
                           ),
@@ -61,28 +84,46 @@ class FavoritesScreen extends StatelessWidget {
                     ),
                   )
                 : favorites.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(28.w),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(AppIcons.heart, size: 54.sp, color: AppColors.secondaryNormal),
-                              SizedBox(height: 14.h),
-                              Text('لا توجد سيارات مفضلة حالياً', textAlign: TextAlign.center, style: getSemiBoldStyle(size: 16, color: AppColors.black10)),
-                              SizedBox(height: 8.h),
-                              Text('ابدأ بإضافة السيارات التي تعجبك للوصول إليها بسرعة لاحقاً', textAlign: TextAlign.center, style: getRegularStyle(size: 13, color: AppColors.font01)),
-                            ],
+                ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(28.w),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            AppIcons.heart,
+                            size: 54.sp,
+                            color: AppColors.secondaryNormal,
                           ),
-                        ),
-                      )
-                    : ListView.separated(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        itemCount: favorites.length,
-                        separatorBuilder: (_, __) => SizedBox(height: 16.h),
-                        itemBuilder: (_, index) =>
-                            CarCard(car: favorites[index], selectedFavorite: true),
+                          SizedBox(height: 14.h),
+                          Text(
+                            'لا توجد سيارات مفضلة حالياً',
+                            textAlign: TextAlign.center,
+                            style: getSemiBoldStyle(
+                              size: 16,
+                              color: AppColors.black10,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            'ابدأ بإضافة السيارات التي تعجبك للوصول إليها بسرعة لاحقاً',
+                            textAlign: TextAlign.center,
+                            style: getRegularStyle(
+                              size: 13,
+                              color: AppColors.font01,
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    itemCount: favorites.length,
+                    separatorBuilder: (_, __) => SizedBox(height: 16.h),
+                    itemBuilder: (_, index) =>
+                        CarCard(car: favorites[index], selectedFavorite: true),
+                  ),
           ),
         ],
       ),

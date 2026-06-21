@@ -11,6 +11,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/confirmation_dialog.dart';
 import '../../../core/widgets/selection_bottom_sheet.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/services/auth_service.dart';
 import '../../get_start/views/welcome_screen.dart';
@@ -48,12 +49,19 @@ class DealerProfileScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 42.r,
-                    backgroundColor: AppColors.primaryLight,
-                    backgroundImage: office?.image.startsWith('http') == true
-                        ? NetworkImage(office!.image)
-                        : const AssetImage(AssetsApp.logoApp) as ImageProvider,
+                  ClipOval(
+                    child: SizedBox.square(
+                      dimension: 84.r,
+                      child: AppNetworkImage(
+                        url: office?.image ?? '',
+                        memoryCacheWidth: 252,
+                        diskCacheWidth: 504,
+                        fallback: Image.asset(
+                          AssetsApp.logoApp,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(height: 12.h),
                   Text(

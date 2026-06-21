@@ -805,6 +805,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حسنًا'**
   String get understood;
+
+  /// No description provided for @registrationServiceError.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الاتصال بخدمة التسجيل، لكن تعذر إنشاء ملف الحساب. يرجى تحديث إعدادات قاعدة البيانات والمحاولة مجددًا.'**
+  String get registrationServiceError;
+
+  /// No description provided for @registrationDisabled.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء الحسابات متوقف مؤقتًا.'**
+  String get registrationDisabled;
+
+  /// No description provided for @officeHasNoCars.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد سيارات لهذا المكتب.'**
+  String get officeHasNoCars;
 }
 
 class _AppLocalizationsDelegate

@@ -376,4 +376,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get understood => 'OK';
+
+  @override
+  String get registrationServiceError =>
+      'Registration was reached, but the account profile could not be created. Update the database setup and try again.';
+
+  @override
+  String get registrationDisabled =>
+      'Account registration is temporarily disabled.';
+
+  @override
+  String get officeHasNoCars => 'This office has no cars.';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../core/constants/app_icons.dart';
 import '../../../core/theme/app_colors.dart';
@@ -75,10 +76,12 @@ class BrandLogo extends StatelessWidget {
     return SizedBox.square(
       dimension: size.r,
       child: brand.logoUrl.contains('google.com/s2/favicons')
-          ? Image.network(
-              brand.logoUrl,
+          ? CachedNetworkImage(
+              imageUrl: brand.logoUrl,
               fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => _fallback(),
+              fadeInDuration: Duration.zero,
+              placeholder: (_, __) => _fallback(),
+              errorWidget: (_, __, ___) => _fallback(),
             )
           : SvgPicture.network(
               brand.logoUrl,

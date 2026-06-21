@@ -20,6 +20,7 @@ import '../../home/models/banner_model.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../../core/widgets/data_state_view.dart';
 import '../../../core/widgets/shimmer_loading.dart';
+import '../../../core/widgets/app_network_image.dart';
 
 class HomeScreen extends StatelessWidget {
   final ValueChanged<int>? onNavigate;
@@ -51,11 +52,19 @@ class HomeScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 25.r,
-                    backgroundImage: session?.office?.image.isNotEmpty == true
-                        ? NetworkImage(session!.office!.image)
-                        : const AssetImage(AssetsApp.logoAppV1) as ImageProvider,
+                  ClipOval(
+                    child: SizedBox.square(
+                      dimension: 50.r,
+                      child: AppNetworkImage(
+                        url: session?.office?.image ?? '',
+                        memoryCacheWidth: 160,
+                        diskCacheWidth: 320,
+                        fallback: Image.asset(
+                          AssetsApp.logoAppV1,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(width: 9.w),
                   Expanded(
@@ -99,16 +108,16 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                ],
+              ),
+              if (homeProvider.banners.isNotEmpty) ...[
+                SizedBox(height: 16.h),
+                _bannerSection(homeProvider.banners),
+                SizedBox(height: 14.h),
               ],
-            ),
-            if (homeProvider.banners.isNotEmpty) ...[
-              SizedBox(height: 16.h),
-              _bannerSection(homeProvider.banners),
-              SizedBox(height: 14.h),
-            ],
-            SizedBox(height: 17.h),
-            _sectionHeader(
-              l.nearbyCars,
+              SizedBox(height: 17.h),
+              _sectionHeader(
+                l.nearbyCars,
                 l.showAll,
                 onTap: () => onNavigate?.call(1),
               ),
@@ -347,11 +356,12 @@ class _BannerCard extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           height: 140.h,
-          child: Image.network(
-            banner.imageUrl,
+          child: AppNetworkImage(
+            url: banner.imageUrl,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) =>
-                Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.cover),
+            memoryCacheWidth: 1000,
+            diskCacheWidth: 1600,
+            fallback: Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.cover),
           ),
         ),
       ),

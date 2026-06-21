@@ -9,6 +9,7 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/my_button.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../../core/services/whatsapp_booking_service.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -188,12 +189,13 @@ class CarCard extends StatelessWidget with NavHelper {
 
   Widget _carImage() {
     if (car.image.startsWith('http')) {
-      return Image.network(
-        car.image,
+      return AppNetworkImage(
+        url: car.image,
         fit: BoxFit.cover,
         alignment: Alignment.center,
-        errorBuilder: (_, __, ___) =>
-            Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.cover),
+        memoryCacheWidth: 760,
+        diskCacheWidth: 1200,
+        fallback: Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.cover),
       );
     }
     return Image.asset(

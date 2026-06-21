@@ -117,5 +117,8 @@
   ,"accountDeletionFailed": "The account could not be deleted now. Try again after the service is updated."
   ,"contactAdministrationToDelete": "Please contact Ajrni Plus administration to delete your account."
   ,"understood": "OK"
+  ,"registrationServiceError": "Registration was reached, but the account profile could not be created. Update the database setup and try again."
+  ,"registrationDisabled": "Account registration is temporarily disabled."
+  ,"officeHasNoCars": "This office has no cars."
 
 }

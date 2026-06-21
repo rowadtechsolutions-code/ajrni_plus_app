@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../../../core/widgets/my_button.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../../core/services/whatsapp_booking_service.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -109,7 +110,8 @@ class CarDetailsScreen extends StatelessWidget {
                                   end: index == 2 ? 0 : 8.w,
                                 ),
                                 child: GestureDetector(
-                                  onTap: () => _openGallery(context, gallery, index),
+                                  onTap: () =>
+                                      _openGallery(context, gallery, index),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(6.r),
                                     child: _carImage(gallery[index]),
@@ -275,21 +277,23 @@ class CarDetailsScreen extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            CircleAvatar(
-                              radius: 20.r,
-                              backgroundColor: AppColors.primaryLight,
-                              backgroundImage:
-                                  car.office?.image.startsWith('http') == true
-                                  ? NetworkImage(car.office!.image)
-                                  : null,
-                              child:
-                                  car.office?.image.startsWith('http') == true
-                                  ? null
-                                  : Icon(
+                            ClipOval(
+                              child: SizedBox.square(
+                                dimension: 40.r,
+                                child: AppNetworkImage(
+                                  url: car.office?.image ?? '',
+                                  memoryCacheWidth: 120,
+                                  diskCacheWidth: 240,
+                                  fallback: ColoredBox(
+                                    color: AppColors.primaryLight,
+                                    child: Icon(
                                       AppIcons.officeBold,
                                       color: AppColors.primaryNormal,
                                       size: 21.sp,
                                     ),
+                                  ),
+                                ),
+                              ),
                             ),
                             SizedBox(width: 9.w),
                             Expanded(
@@ -421,23 +425,29 @@ class CarDetailsScreen extends StatelessWidget {
         : '${car.dailyPrice} ${car.currency}';
   }
 
-  void _openGallery(BuildContext context, List<String> gallery, int initialIndex) {
+  void _openGallery(
+    BuildContext context,
+    List<String> gallery,
+    int initialIndex,
+  ) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => _FullScreenGallery(images: gallery, initialIndex: initialIndex),
+        builder: (_) =>
+            _FullScreenGallery(images: gallery, initialIndex: initialIndex),
       ),
     );
   }
 
   Widget _carImage(String path) {
     if (path.startsWith('http')) {
-      return Image.network(
-        path,
+      return AppNetworkImage(
+        url: path,
         fit: BoxFit.cover,
         alignment: Alignment.center,
-        errorBuilder: (_, __, ___) =>
-            Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.cover),
+        memoryCacheWidth: 1080,
+        diskCacheWidth: 1600,
+        fallback: Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.cover),
       );
     }
     return Image.asset(
@@ -468,7 +478,10 @@ class _Spec extends StatelessWidget {
         children: [
           Icon(icon, size: 18.sp, color: AppColors.font01),
           SizedBox(height: 2.h),
-          Text(title, style: getRegularStyle(size: 11, color: AppColors.font01)),
+          Text(
+            title,
+            style: getRegularStyle(size: 11, color: AppColors.font01),
+          ),
           Text(
             value,
             style: getMediumStyle(size: 12, color: AppColors.primaryNormal),
@@ -531,9 +544,7 @@ class _FullScreenGalleryState extends State<_FullScreenGallery> {
           onPageChanged: (i) => setState(() => _currentIndex = i),
           itemBuilder: (_, i) => InteractiveViewer(
             maxScale: 4,
-            child: Center(
-              child: _buildImage(widget.images[i]),
-            ),
+            child: Center(child: _buildImage(widget.images[i])),
           ),
         ),
       ),
@@ -542,8 +553,15 @@ class _FullScreenGalleryState extends State<_FullScreenGallery> {
 
   Widget _buildImage(String path) {
     if (path.startsWith('http')) {
-      return Image.network(path, fit: BoxFit.contain, errorBuilder: (_, __, ___) => Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.contain));
+      return AppNetworkImage(
+        url: path,
+        fit: BoxFit.contain,
+        fallback: Image.asset(AssetsApp.hyundaiAvante, fit: BoxFit.contain),
+      );
     }
-    return Image.asset(path.isEmpty ? AssetsApp.hyundaiAvante : path, fit: BoxFit.contain);
+    return Image.asset(
+      path.isEmpty ? AssetsApp.hyundaiAvante : path,
+      fit: BoxFit.contain,
+    );
   }
 }

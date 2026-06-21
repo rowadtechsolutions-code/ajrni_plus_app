@@ -372,4 +372,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get understood => 'حسنًا';
+
+  @override
+  String get registrationServiceError =>
+      'تم الاتصال بخدمة التسجيل، لكن تعذر إنشاء ملف الحساب. يرجى تحديث إعدادات قاعدة البيانات والمحاولة مجددًا.';
+
+  @override
+  String get registrationDisabled => 'إنشاء الحسابات متوقف مؤقتًا.';
+
+  @override
+  String get officeHasNoCars => 'لا توجد سيارات لهذا المكتب.';
 }

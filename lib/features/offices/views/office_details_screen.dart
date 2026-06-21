@@ -1,3 +1,5 @@
+import 'package:arini_plus_app/core/widgets/custom_height_spacer.dart';
+import 'package:arini_plus_app/core/widgets/custom_width_spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,6 +12,7 @@ import '../../../core/widgets/custom_app_bar.dart';
 import '../../../core/widgets/my_button.dart';
 import '../../../core/widgets/data_state_view.dart';
 import '../../../core/widgets/shimmer_loading.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../../core/services/contact_launcher_service.dart';
 import '../../cars/models/car_model.dart';
 import '../../cars/services/car_service.dart';
@@ -76,37 +79,40 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                     child: CircleAvatar(
                       radius: 29.r,
                       backgroundColor: AppColors.white,
-                      child: CircleAvatar(
-                        radius: 24.r,
-                        backgroundColor: AppColors.surfaceBlue,
-                        backgroundImage:
-                            office?.image.startsWith('http') == true
-                            ? NetworkImage(office!.image)
-                            : null,
-                        child: office?.image.startsWith('http') == true
-                            ? null
-                            : Icon(
+                      child: ClipOval(
+                        child: SizedBox.square(
+                          dimension: 48.r,
+                          child: AppNetworkImage(
+                            url: office?.image ?? '',
+                            memoryCacheWidth: 160,
+                            diskCacheWidth: 320,
+                            fallback: ColoredBox(
+                              color: AppColors.surfaceBlue,
+                              child: Icon(
                                 AppIcons.officeBold,
                                 color: AppColors.primaryNormal,
                                 size: 25.sp,
                               ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10.h),
+              CustomHeightSpacer(height: 32),
               Row(
                 children: [
-                  SizedBox(width: 66.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           office?.officeName ?? l.officeName,
-                          style: getMediumStyle(
-                            size: 14,
+                          textAlign: TextAlign.start,
+                          style: getBoldStyle(
+                            size: 16,
                             color: AppColors.black10,
                           ),
                         ),
@@ -114,8 +120,9 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                           office?.bio.isNotEmpty == true
                               ? office!.bio
                               : l.officeDescription,
+                          textAlign: TextAlign.right,
                           style: getRegularStyle(
-                            size: 11,
+                            size: 12,
                             color: AppColors.font01,
                           ),
                         ),
@@ -124,7 +131,7 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 6.h),
+              CustomHeightSpacer(height: 6),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 5.h),
                 decoration: BoxDecoration(
@@ -141,7 +148,7 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 10.h),
+              CustomHeightSpacer(height: 10),
               Row(
                 children: [
                   Expanded(
@@ -171,7 +178,8 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 16.h),
+              Divider(color: AppColors.border01.withOpacity(.5), height: 32.h,),
+              CustomHeightSpacer(height: 16),
               FutureBuilder<List<CarModel>>(
                 future: _carsFuture,
                 builder: (context, snapshot) {
@@ -195,8 +203,8 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                   final cars = snapshot.data ?? const <CarModel>[];
                   if (cars.isEmpty) {
                     return DataStateView(
-                      title: l.noResults,
-                      subtitle: l.noResultsSubtitle,
+                      title: l.officeHasNoCars,
+                      subtitle: '',
                       actionText: l.tryNow,
                       onRetry: () => setState(_loadCars),
                     );
@@ -232,11 +240,15 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
   Widget _coverImage() {
     final cover = office?.cover ?? '';
     if (cover.startsWith('http')) {
-      return Image.network(
-        cover,
+      return AppNetworkImage(
+        url: cover,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) =>
-            Image.asset(AssetsApp.officeCover, fit: BoxFit.cover),
+        memoryCacheWidth: 1000,
+        diskCacheWidth: 1600,
+        placeholder: const ShimmerLoading(
+          child: ColoredBox(color: AppColors.gray),
+        ),
+        fallback: Image.asset(AssetsApp.officeCover, fit: BoxFit.cover),
       );
     }
     return Image.asset(AssetsApp.officeCover, fit: BoxFit.cover);

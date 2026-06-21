@@ -16,7 +16,8 @@ class AuthErrorMapper {
     }
     if (value.contains('email not confirmed')) return l.emailNotConfirmed;
     if (value.contains('user already registered') ||
-        value.contains('already been registered')) {
+        value.contains('already been registered') ||
+        value.contains('already exists')) {
       return l.emailAlreadyRegistered;
     }
     if (value.contains('password should be') ||
@@ -33,6 +34,16 @@ class AuthErrorMapper {
     }
     if (value.contains('rate limit') || value.contains('too many requests')) {
       return l.tooManyAttempts;
+    }
+    if (value.contains('database error saving new user') ||
+        value.contains('new row violates row-level security') ||
+        value.contains('row-level security policy') ||
+        value.contains('profile') && value.contains('not found')) {
+      return l.registrationServiceError;
+    }
+    if (value.contains('signup is disabled') ||
+        value.contains('signups not allowed')) {
+      return l.registrationDisabled;
     }
     if (value.contains('delete_user_account') ||
         value.contains('delete_current_user') ||

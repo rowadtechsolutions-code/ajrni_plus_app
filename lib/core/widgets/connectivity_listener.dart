@@ -20,6 +20,7 @@ class ConnectivityController {
         _show(navigatorKey);
       }
     }
+
     connectivity.checkConnectivity().then(handle);
     _subscription = connectivity.onConnectivityChanged.listen(handle);
   }

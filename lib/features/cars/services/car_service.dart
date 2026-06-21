@@ -32,10 +32,13 @@ class CarService {
         offices[office.id] = office;
       }
     }
-    final cars = rawCars.map((json) {
-      final officeId = CarModel.fromJson(json).officeId;
-      return CarModel.fromJson(json, office: offices[officeId]);
-    }).where((car) => car.isActive && car.office?.isActive != false).toList();
+    final cars = rawCars
+        .map((json) {
+          final officeId = CarModel.fromJson(json).officeId;
+          return CarModel.fromJson(json, office: offices[officeId]);
+        })
+        .where((car) => car.isActive && car.office?.isActive != false)
+        .toList();
     final term = search.trim().toLowerCase();
     if (term.isEmpty) return cars;
     return cars.where((car) {

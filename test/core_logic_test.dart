@@ -4,6 +4,9 @@ import 'package:arini_plus_app/core/services/contact_launcher_service.dart';
 import 'package:arini_plus_app/features/cars/models/car_model.dart';
 import 'package:arini_plus_app/features/offices/models/office_model.dart';
 import 'package:arini_plus_app/features/dealer/data/car_brands_data.dart';
+import 'package:arini_plus_app/features/auth/helpers/auth_error_mapper.dart';
+import 'package:arini_plus_app/core/l10n/app_localizations_en.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -99,6 +102,17 @@ void main() {
       expect(brand.models, isNotEmpty);
       expect(brand.models.toSet().length, brand.models.length);
     }
+  });
+
+  test('registration database errors are not shown as unexpected errors', () {
+    final message = AuthErrorMapper.message(
+      const AuthException('Database error saving new user'),
+      AppLocalizationsEn(),
+    );
+    expect(
+      message,
+      'Registration was reached, but the account profile could not be created. Update the database setup and try again.',
+    );
   });
 
   test('normalizes Gulf phone to international WhatsApp format', () {

@@ -117,5 +117,8 @@
   ,"accountDeletionFailed": "تعذر حذف الحساب الآن. أعد المحاولة بعد تحديث الخدمة."
   ,"contactAdministrationToDelete": "يرجى مراجعة إدارة أجرني بلس لحذف حسابك."
   ,"understood": "حسنًا"
+  ,"registrationServiceError": "تم الاتصال بخدمة التسجيل، لكن تعذر إنشاء ملف الحساب. يرجى تحديث إعدادات قاعدة البيانات والمحاولة مجددًا."
+  ,"registrationDisabled": "إنشاء الحسابات متوقف مؤقتًا."
+  ,"officeHasNoCars": "لا توجد سيارات لهذا المكتب."
 
 }

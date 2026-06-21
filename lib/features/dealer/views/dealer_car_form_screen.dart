@@ -13,6 +13,7 @@ import '../../../core/widgets/custom_app_bar.dart';
 import '../../../core/widgets/my_button.dart';
 import '../../../core/widgets/my_lable_text_fild.dart';
 import '../../../core/widgets/selection_bottom_sheet.dart';
+import '../../../core/widgets/app_network_image.dart';
 import '../../cars/models/car_model.dart';
 import '../data/car_brands_data.dart';
 import '../helpers/dealer_text.dart';
@@ -344,7 +345,13 @@ class _DealerCarFormScreenState extends State<DealerCarFormScreen>
           itemBuilder: (_, index) {
             if (index < _existing.length) {
               return _imageTile(
-                Image.network(_existing[index], fit: BoxFit.cover),
+                AppNetworkImage(
+                  url: _existing[index],
+                  fit: BoxFit.cover,
+                  memoryCacheWidth: 360,
+                  diskCacheWidth: 720,
+                  fallback: const ColoredBox(color: AppColors.background),
+                ),
                 () => setState(() => _existing.removeAt(index)),
                 () => _replaceImage(existingIndex: index),
               );
