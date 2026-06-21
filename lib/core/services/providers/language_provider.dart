@@ -4,7 +4,15 @@ import '../../enums/enums.dart';
 import '../cache/app_preferences.dart';
 
 class LanguageProvider extends ChangeNotifier {
-  String language = AppPreferences().getter(CacheKeys.language) ?? 'ar';
+  String language = 'ar';
+
+  void loadSavedLanguage() {
+    final savedLanguage =
+        AppPreferences().getter(CacheKeys.language) as String?;
+    if (savedLanguage == null || savedLanguage == language) return;
+    language = savedLanguage;
+    notifyListeners();
+  }
 
   Future<void> changeLanguage() async {
     language = language == 'ar' ? 'en' : 'ar';

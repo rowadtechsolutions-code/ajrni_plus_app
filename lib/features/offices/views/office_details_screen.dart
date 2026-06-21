@@ -1,8 +1,6 @@
 import 'package:arini_plus_app/core/widgets/custom_height_spacer.dart';
-import 'package:arini_plus_app/core/widgets/custom_width_spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/assets_app.dart';
 import '../../../core/l10n/app_localizations.dart';
@@ -178,7 +176,10 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                   ),
                 ],
               ),
-              Divider(color: AppColors.border01.withOpacity(.5), height: 32.h,),
+              Divider(
+                color: AppColors.border01.withValues(alpha: .5),
+                height: 32.h,
+              ),
               CustomHeightSpacer(height: 16),
               FutureBuilder<List<CarModel>>(
                 future: _carsFuture,

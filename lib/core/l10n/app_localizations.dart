@@ -823,6 +823,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'لا توجد سيارات لهذا المكتب.'**
   String get officeHasNoCars;
+
+  /// No description provided for @noInternetTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد اتصال بالإنترنت'**
+  String get noInternetTitle;
+
+  /// No description provided for @noInternetMessage.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى التحقق من اتصال الإنترنت للمتابعة في استخدام التطبيق.'**
+  String get noInternetMessage;
 }
 
 class _AppLocalizationsDelegate

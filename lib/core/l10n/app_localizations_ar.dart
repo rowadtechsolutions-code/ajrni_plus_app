@@ -382,4 +382,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get officeHasNoCars => 'لا توجد سيارات لهذا المكتب.';
+
+  @override
+  String get noInternetTitle => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get noInternetMessage =>
+      'يرجى التحقق من اتصال الإنترنت للمتابعة في استخدام التطبيق.';
 }

@@ -120,5 +120,7 @@
   ,"registrationServiceError": "Registration was reached, but the account profile could not be created. Update the database setup and try again."
   ,"registrationDisabled": "Account registration is temporarily disabled."
   ,"officeHasNoCars": "This office has no cars."
+  ,"noInternetTitle": "No internet connection"
+  ,"noInternetMessage": "Check your internet connection to continue using the app."
 
 }

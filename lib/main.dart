@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,26 +20,9 @@ import 'features/get_start/views/splash_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  /// Initialize cache
-  await AppPreferences().initCache;
-
-  /// Initialize supabase
-  await Supabase.initialize(
-    url: ApiConstants.baseUrl,
-    publishableKey: ApiConstants.apiKey,
-  );
-
-  ///  listen for password recovery link
-  // Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-  //   final event = data.event;
-  //
-  //   if (event == AuthChangeEvent.passwordRecovery) {
-  //     navigatorKey.currentState?.pushNamed('/create-new-password');
-  //   }
-  // });
+  WidgetsBinding.instance.deferFirstFrame();
 
   /// Initialize system ui (Instagram-style edge-to-edge)
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -52,13 +37,26 @@ void main() async {
     ),
   );
 
-  runApp(const MyApp());
+  final initialization = _initializeServices();
+  runApp(MyApp(initialization: initialization));
 
-  ConnectivityController.init(navigatorKey);
+  unawaited(
+    initialization.then((_) => ConnectivityController.init(navigatorKey)),
+  );
+}
+
+Future<void> _initializeServices() async {
+  await AppPreferences().initCache;
+  await Supabase.initialize(
+    url: ApiConstants.baseUrl,
+    publishableKey: ApiConstants.apiKey,
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Future<void> initialization;
+
+  const MyApp({super.key, required this.initialization});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +73,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (context) => OfficesProvider()),
             // ChangeNotifierProvider(create: (context) => UsersProvider()),
           ],
-          child: const MyMaterialApp(),
+          child: MyMaterialApp(initialization: initialization),
         );
       },
     );
@@ -83,7 +81,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyMaterialApp extends StatelessWidget {
-  const MyMaterialApp({super.key});
+  final Future<void> initialization;
+
+  const MyMaterialApp({super.key, required this.initialization});
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +122,7 @@ class MyMaterialApp extends StatelessWidget {
           //   '/create-new-password': (context) =>
           //   const CreateNewPasswordScreen(),
           // },
-          home: const SplashScreen(),
+          home: SplashScreen(initialization: initialization),
           locale: Locale(lang.language),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: const [Locale('ar'), Locale('en')],

@@ -9,33 +9,56 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../core/enums/enums.dart';
 import '../../../core/services/cache/app_preferences.dart';
+import '../../../core/services/providers/language_provider.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/services/auth_service.dart';
 import '../../dealer/views/dealer_dashboard_screen.dart';
 import '../../home/views/main_home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final Future<void> initialization;
+
+  const SplashScreen({super.key, required this.initialization});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> with NavHelper {
+  bool _splashImageReady = false;
+
   @override
   void initState() {
     super.initState();
     init();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_splashImageReady) return;
+    _splashImageReady = true;
+    precacheImage(const AssetImage(AssetsApp.splashScreen), context)
+        .whenComplete(WidgetsBinding.instance.allowFirstFrame);
+  }
+
   Future<void> init() async {
+    final minimumDisplayTime = Future<void>.delayed(
+      const Duration(milliseconds: 700),
+    );
+
+    await widget.initialization;
+    if (!mounted) return;
+
+    context.read<LanguageProvider>().loadSavedLanguage();
+
     final session = await AuthService().restoreSession();
     final guestMode =
         AppPreferences().getter(CacheKeys.guestMode) as bool? ?? false;
     if (!mounted) return;
     Provider.of<AuthProvider>(context, listen: false).setSession(session);
 
-    await Future.delayed(const Duration(seconds: 3));
+    await minimumDisplayTime;
 
     if (!mounted) return;
 

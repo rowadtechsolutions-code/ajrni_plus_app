@@ -14,15 +14,20 @@ class AppPreferences {
 
   /// SHARED PREF.
 
-  late SharedPreferences sharedPreferences;
+  SharedPreferences? _sharedPreferences;
+  Future<void>? _initialization;
 
-  Future<void> get initCache async {
-    sharedPreferences = await SharedPreferences.getInstance();
+  Future<void> get initCache {
+    return _initialization ??= SharedPreferences.getInstance().then((value) {
+      _sharedPreferences = value;
+    });
   }
 
   /// DATA
 
   Future<void> setter(CacheKeys key, dynamic value) async {
+    await initCache;
+    final sharedPreferences = _sharedPreferences!;
     if (value is String) {
       await sharedPreferences.setString(key.name, value);
     } else if (value is int) {
@@ -34,9 +39,11 @@ class AppPreferences {
     }
   }
 
-  dynamic getter(CacheKeys key) => sharedPreferences.get(key.name);
+  dynamic getter(CacheKeys key) => _sharedPreferences?.get(key.name);
 
   Future<void> remove(CacheKeys key) async {
+    await initCache;
+    final sharedPreferences = _sharedPreferences!;
     await sharedPreferences.remove(key.name);
   }
 

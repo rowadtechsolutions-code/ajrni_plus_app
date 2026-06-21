@@ -115,6 +115,10 @@ Future<CarBrand?> showBrandSelection({
   return showModalBottomSheet<CarBrand>(
     context: context,
     isScrollControlled: true,
+    sheetAnimationStyle: const AnimationStyle(
+      duration: Duration(milliseconds: 160),
+      reverseDuration: Duration(milliseconds: 110),
+    ),
     backgroundColor: Colors.transparent,
     builder: (_) => _BrandSheet(title: title, selected: selected),
   );
@@ -140,116 +144,134 @@ class _BrandSheetState extends State<_BrandSheet> {
           (brand) => brand.name.toLowerCase().contains(_query.toLowerCase()),
         )
         .toList();
-    return SafeArea(
-      top: false,
-      child: Material(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.sizeOf(context).height * .78,
-          ),
-          child: Column(
-            children: [
-              SizedBox(height: 12.h),
-              Container(
-                width: 48.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: AppColors.border01,
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(20.r),
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    widget.title,
-                    style: getSemiBoldStyle(size: 17, color: AppColors.black10),
+    final mediaQuery = MediaQuery.of(context);
+    final keyboardHeight = mediaQuery.viewInsets.bottom;
+    final availableHeight = mediaQuery.size.height - keyboardHeight;
+
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: keyboardHeight),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: availableHeight * .78),
+            child: Column(
+              children: [
+                SizedBox(height: 12.h),
+                Container(
+                  width: 48.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.border01,
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 14.h),
-                child: TextField(
-                  onChanged: (value) => setState(() => _query = value.trim()),
-                  decoration: InputDecoration(
-                    hintText: MaterialLocalizations.of(
-                      context,
-                    ).searchFieldLabel,
-                    prefixIcon: Icon(
-                      AppIcons.search,
-                      color: AppColors.hint,
-                      size: 20.sp,
-                    ),
-                    isDense: true,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: const BorderSide(color: AppColors.border01),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      borderSide: const BorderSide(
-                        color: AppColors.primaryNormal,
+                Padding(
+                  padding: EdgeInsets.all(20.r),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Text(
+                      widget.title,
+                      style: getSemiBoldStyle(
+                        size: 17,
+                        color: AppColors.black10,
                       ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: GridView.builder(
-                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10.w,
-                    mainAxisSpacing: 10.h,
-                    childAspectRatio: 1.05,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 14.h),
+                  child: TextField(
+                    onChanged: (value) =>
+                        setState(() => _query = value.trim()),
+                    decoration: InputDecoration(
+                      hintText: MaterialLocalizations.of(
+                        context,
+                      ).searchFieldLabel,
+                      prefixIcon: Icon(
+                        AppIcons.search,
+                        color: AppColors.hint,
+                        size: 20.sp,
+                      ),
+                      isDense: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                        borderSide: const BorderSide(
+                          color: AppColors.border01,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                        borderSide: const BorderSide(
+                          color: AppColors.primaryNormal,
+                        ),
+                      ),
+                    ),
                   ),
-                  itemCount: brands.length,
-                  itemBuilder: (_, index) {
-                    final brand = brands[index];
-                    final selected = widget.selected?.name == brand.name;
-                    return InkWell(
-                      onTap: () => Navigator.pop(context, brand),
-                      borderRadius: BorderRadius.circular(12.r),
-                      child: Container(
-                        padding: EdgeInsets.all(10.r),
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? AppColors.primaryLight
-                              : AppColors.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
+                ),
+                Expanded(
+                  child: GridView.builder(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10.w,
+                      mainAxisSpacing: 10.h,
+                      childAspectRatio: 1.05,
+                    ),
+                    itemCount: brands.length,
+                    itemBuilder: (_, index) {
+                      final brand = brands[index];
+                      final selected = widget.selected?.name == brand.name;
+                      return InkWell(
+                        onTap: () {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          Navigator.pop(context, brand);
+                        },
+                        borderRadius: BorderRadius.circular(12.r),
+                        child: Container(
+                          padding: EdgeInsets.all(10.r),
+                          decoration: BoxDecoration(
                             color: selected
-                                ? AppColors.primaryNormal
-                                : AppColors.border01,
+                                ? AppColors.primaryLight
+                                : AppColors.white,
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: selected
+                                  ? AppColors.primaryNormal
+                                  : AppColors.border01,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              BrandLogo(brand: brand, size: 38),
+                              SizedBox(height: 8.h),
+                              Text(
+                                brand.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: getMediumStyle(
+                                  size: 11,
+                                  color: selected
+                                      ? AppColors.primaryNormal
+                                      : AppColors.font02,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            BrandLogo(brand: brand, size: 38),
-                            SizedBox(height: 8.h),
-                            Text(
-                              brand.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: getMediumStyle(
-                                size: 11,
-                                color: selected
-                                    ? AppColors.primaryNormal
-                                    : AppColors.font02,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

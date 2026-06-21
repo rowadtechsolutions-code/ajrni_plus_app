@@ -21,6 +21,10 @@ Future<T?> showSelectionBottomSheet<T>({
   return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: true,
+    sheetAnimationStyle: const AnimationStyle(
+      duration: Duration(milliseconds: 160),
+      reverseDuration: Duration(milliseconds: 110),
+    ),
     backgroundColor: Colors.transparent,
     builder: (_) => _SelectionSheet<T>(
       title: title,
@@ -118,108 +122,126 @@ class _SelectionSheetState<T> extends State<_SelectionSheet<T>> {
     final filteredItems = widget.items.where((item) {
       return item.label.toLowerCase().contains(_query.toLowerCase());
     }).toList();
-    return SafeArea(
-      top: false,
-      child: Material(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.sizeOf(context).height * .72,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 12.h),
-              Container(
-                width: 48.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: AppColors.border01,
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(20.r),
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    widget.title,
-                    style: getSemiBoldStyle(size: 17, color: AppColors.black10),
+    final mediaQuery = MediaQuery.of(context);
+    final keyboardHeight = mediaQuery.viewInsets.bottom;
+    final availableHeight = mediaQuery.size.height - keyboardHeight;
+
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: keyboardHeight),
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: availableHeight * .72),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 12.h),
+                Container(
+                  width: 48.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.border01,
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 12.h),
-                child: SizedBox(
-                  height: 46.h,
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (value) => setState(() => _query = value.trim()),
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      hintText: MaterialLocalizations.of(
-                        context,
-                      ).searchFieldLabel,
-                      prefixIcon: Icon(
-                        AppIcons.search,
-                        size: 20.sp,
-                        color: AppColors.hint,
+                Padding(
+                  padding: EdgeInsets.all(20.r),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Text(
+                      widget.title,
+                      style: getSemiBoldStyle(
+                        size: 17,
+                        color: AppColors.black10,
                       ),
-                      isDense: true,
-                      filled: true,
-                      fillColor: AppColors.white,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: const BorderSide(color: AppColors.border01),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: const BorderSide(
-                          color: AppColors.primaryNormal,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 12.h),
+                  child: SizedBox(
+                    height: 46.h,
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) =>
+                          setState(() => _query = value.trim()),
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        hintText: MaterialLocalizations.of(
+                          context,
+                        ).searchFieldLabel,
+                        prefixIcon: Icon(
+                          AppIcons.search,
+                          size: 20.sp,
+                          color: AppColors.hint,
+                        ),
+                        isDense: true,
+                        filled: true,
+                        fillColor: AppColors.white,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: const BorderSide(
+                            color: AppColors.border01,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: const BorderSide(
+                            color: AppColors.primaryNormal,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
-                  itemCount: filteredItems.length,
-                  separatorBuilder: (_, __) => Divider(
-                    height: 1.h,
-                    color: AppColors.border01.withValues(alpha: .6),
-                  ),
-                  itemBuilder: (_, index) {
-                    final item = filteredItems[index];
-                    final selected = item.value == widget.selectedValue;
-                    return ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
-                      title: Text(
-                        item.label,
-                        style: getMediumStyle(
-                          size: 14,
-                          color: selected
-                              ? AppColors.primaryNormal
-                              : AppColors.font02,
+                Flexible(
+                  child: ListView.separated(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
+                    itemCount: filteredItems.length,
+                    separatorBuilder: (_, __) => Divider(
+                      height: 1.h,
+                      color: AppColors.border01.withValues(alpha: .6),
+                    ),
+                    itemBuilder: (_, index) {
+                      final item = filteredItems[index];
+                      final selected = item.value == widget.selectedValue;
+                      return ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                        title: Text(
+                          item.label,
+                          style: getMediumStyle(
+                            size: 14,
+                            color: selected
+                                ? AppColors.primaryNormal
+                                : AppColors.font02,
+                          ),
                         ),
-                      ),
-                      trailing: selected
-                          ? Icon(
-                              Icons.check_circle,
-                              color: AppColors.primaryNormal,
-                              size: 21.sp,
-                            )
-                          : null,
-                      onTap: () => Navigator.pop(context, item.value),
-                    );
-                  },
+                        trailing: selected
+                            ? Icon(
+                                Icons.check_circle,
+                                color: AppColors.primaryNormal,
+                                size: 21.sp,
+                              )
+                            : null,
+                        onTap: () {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          Navigator.pop(context, item.value);
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

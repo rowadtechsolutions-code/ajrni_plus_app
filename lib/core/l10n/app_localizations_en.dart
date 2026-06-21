@@ -387,4 +387,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get officeHasNoCars => 'This office has no cars.';
+
+  @override
+  String get noInternetTitle => 'No internet connection';
+
+  @override
+  String get noInternetMessage =>
+      'Check your internet connection to continue using the app.';
 }
