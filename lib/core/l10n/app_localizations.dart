@@ -835,6 +835,60 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'يرجى التحقق من اتصال الإنترنت للمتابعة في استخدام التطبيق.'**
   String get noInternetMessage;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسيت كلمة المرور'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordDescription.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل بريدك الإلكتروني وسنرسل لك رابط استعادة كلمة المرور'**
+  String get forgotPasswordDescription;
+
+  /// No description provided for @resetEmailHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل بريدك الإلكتروني'**
+  String get resetEmailHint;
+
+  /// No description provided for @sendResetLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال رابط الاستعادة'**
+  String get sendResetLink;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In ar, this message translates to:
+  /// **'العودة لتسجيل الدخول'**
+  String get backToLogin;
+
+  /// No description provided for @operationSuccessful.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت العملية بنجاح'**
+  String get operationSuccessful;
+
+  /// No description provided for @passwordResetSuccessMessage.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني.'**
+  String get passwordResetSuccessMessage;
+
+  /// No description provided for @emailNotRegistered.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد الإلكتروني غير مسجل.'**
+  String get emailNotRegistered;
+
+  /// No description provided for @passwordResetSetupRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'يجب تفعيل استعادة كلمة المرور في Supabase.'**
+  String get passwordResetSetupRequired;
 }
 
 class _AppLocalizationsDelegate

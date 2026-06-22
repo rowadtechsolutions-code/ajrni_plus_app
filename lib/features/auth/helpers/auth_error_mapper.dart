@@ -45,10 +45,12 @@ class AuthErrorMapper {
         value.contains('signups not allowed')) {
       return l.registrationDisabled;
     }
+    if (value.contains('is_email_registered') || value.contains('pgrst202')) {
+      return l.passwordResetSetupRequired;
+    }
     if (value.contains('delete_user_account') ||
         value.contains('delete_current_user') ||
-        value.contains('account deletion failed') ||
-        value.contains('could not find the function')) {
+        value.contains('account deletion failed')) {
       return l.accountDeletionFailed;
     }
     return l.unexpectedError;

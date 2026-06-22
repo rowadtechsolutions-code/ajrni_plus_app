@@ -1,4 +1,7 @@
 class ApiConstants {
+  static const String passwordResetRedirectUrl =
+      'https://www.ajrniplus.com/auth/update-password';
+
   static const String baseUrl = String.fromEnvironment(
     'SUPABASE_URL',
     defaultValue: 'https://slglklsyrbgcsdgruunk.supabase.co',

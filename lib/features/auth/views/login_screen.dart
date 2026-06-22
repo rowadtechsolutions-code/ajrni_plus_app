@@ -22,6 +22,7 @@ import '../providers/auth_provider.dart';
 import '../../dealer/views/dealer_dashboard_screen.dart';
 import '../helpers/auth_error_mapper.dart';
 import '../../home/views/main_home_screen.dart';
+import 'forgot_password_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -150,7 +151,13 @@ class _LoginScreenState extends State<LoginScreen> with NavHelper {
                 ),
                 CustomHeightSpacer(height: 18),
                 GestureDetector(
-                  onTap: () => _resetPassword(localizations),
+                  onTap: () => jump(
+                    context,
+                    ForgotPasswordScreen(
+                      initialEmail: _emailController.text.trim(),
+                    ),
+                    false,
+                  ),
                   child: SizedBox(
                     width: double.infinity,
                     child: Text(
@@ -255,23 +262,4 @@ class _LoginScreenState extends State<LoginScreen> with NavHelper {
     );
   }
 
-  Future<void> _resetPassword(AppLocalizations l) async {
-    final error = FormValidators.email(_emailController.text, l.invalidEmail);
-    if (error != null) {
-      _showMessage(error);
-      return;
-    }
-    try {
-      await AuthService().sendPasswordReset(_emailController.text);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l.passwordResetSent),
-          backgroundColor: AppColors.success,
-        ),
-      );
-    } catch (error) {
-      if (mounted) _showMessage(AuthErrorMapper.message(error, l));
-    }
-  }
 }

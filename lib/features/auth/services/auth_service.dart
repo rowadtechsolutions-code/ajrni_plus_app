@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/constants/api_constants.dart';
 import '../../../core/enums/enums.dart';
 import '../../../core/services/cache/app_preferences.dart';
 import '../../offices/models/office_model.dart';
@@ -157,8 +158,31 @@ class AuthService {
     await AppPreferences().removeSession();
   }
 
-  Future<void> sendPasswordReset(String email) async {
-    await _client.auth.resetPasswordForEmail(email.trim().toLowerCase());
+  Future<bool> sendPasswordReset(String email) async {
+    final normalizedEmail = email.trim().toLowerCase();
+    final isRegistered = await _client.rpc(
+      'is_email_registered',
+      params: {'email_value': normalizedEmail},
+    );
+    if (isRegistered != true) return false;
+
+    final passwordResetClient = SupabaseClient(
+      ApiConstants.baseUrl,
+      ApiConstants.apiKey,
+      authOptions: const AuthClientOptions(
+        authFlowType: AuthFlowType.implicit,
+        autoRefreshToken: false,
+      ),
+    );
+    try {
+      await passwordResetClient.auth.resetPasswordForEmail(
+        normalizedEmail,
+        redirectTo: ApiConstants.passwordResetRedirectUrl,
+      );
+    } finally {
+      await passwordResetClient.dispose();
+    }
+    return true;
   }
 
   Future<void> deleteCurrentAccount() async {

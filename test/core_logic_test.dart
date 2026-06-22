@@ -115,6 +115,17 @@ void main() {
     );
   });
 
+  test('missing password reset RPC has a dedicated error', () {
+    final message = AuthErrorMapper.message(
+      const PostgrestException(
+        message: 'Could not find the function public.is_email_registered',
+        code: 'PGRST202',
+      ),
+      AppLocalizationsEn(),
+    );
+    expect(message, 'Password recovery needs to be activated in Supabase.');
+  });
+
   test('normalizes Gulf phone to international WhatsApp format', () {
     expect(
       ContactLauncherService.internationalPhone('099123456', 'OM'),

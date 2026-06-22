@@ -389,4 +389,34 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get noInternetMessage =>
       'يرجى التحقق من اتصال الإنترنت للمتابعة في استخدام التطبيق.';
+
+  @override
+  String get forgotPasswordTitle => 'نسيت كلمة المرور';
+
+  @override
+  String get forgotPasswordDescription =>
+      'أدخل بريدك الإلكتروني وسنرسل لك رابط استعادة كلمة المرور';
+
+  @override
+  String get resetEmailHint => 'أدخل بريدك الإلكتروني';
+
+  @override
+  String get sendResetLink => 'إرسال رابط الاستعادة';
+
+  @override
+  String get backToLogin => 'العودة لتسجيل الدخول';
+
+  @override
+  String get operationSuccessful => 'تمت العملية بنجاح';
+
+  @override
+  String get passwordResetSuccessMessage =>
+      'تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني.';
+
+  @override
+  String get emailNotRegistered => 'البريد الإلكتروني غير مسجل.';
+
+  @override
+  String get passwordResetSetupRequired =>
+      'يجب تفعيل استعادة كلمة المرور في Supabase.';
 }

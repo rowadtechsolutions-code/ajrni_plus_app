@@ -122,5 +122,14 @@
   ,"officeHasNoCars": "لا توجد سيارات لهذا المكتب."
   ,"noInternetTitle": "لا يوجد اتصال بالإنترنت"
   ,"noInternetMessage": "يرجى التحقق من اتصال الإنترنت للمتابعة في استخدام التطبيق."
+  ,"forgotPasswordTitle": "نسيت كلمة المرور"
+  ,"forgotPasswordDescription": "أدخل بريدك الإلكتروني وسنرسل لك رابط استعادة كلمة المرور"
+  ,"resetEmailHint": "أدخل بريدك الإلكتروني"
+  ,"sendResetLink": "إرسال رابط الاستعادة"
+  ,"backToLogin": "العودة لتسجيل الدخول"
+  ,"operationSuccessful": "تمت العملية بنجاح"
+  ,"passwordResetSuccessMessage": "تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني."
+  ,"emailNotRegistered": "البريد الإلكتروني غير مسجل."
+  ,"passwordResetSetupRequired": "يجب تفعيل استعادة كلمة المرور في Supabase."
 
 }

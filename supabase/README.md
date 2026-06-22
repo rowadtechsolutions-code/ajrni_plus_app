@@ -14,7 +14,17 @@
    Editor. It creates user/office profiles from Auth metadata and adds the
    required RLS policies.
 
-3. Verify the `cars` table exposes these required columns:
+3. Run `migrations/20260622_password_reset_email_check.sql` in the Supabase
+   SQL Editor. This is required to check whether the email exists in Auth
+   before sending a password-reset message.
+
+4. Add `https://www.ajrniplus.com/auth/update-password` to **Authentication >
+   URL Configuration > Redirect URLs**. The website must handle the Supabase
+   password-recovery callback on this URL and display its new-password form.
+   The Flutter app sends recovery requests using the implicit auth flow so the
+   website receives the access and refresh tokens in the URL fragment.
+
+5. Verify the `cars` table exposes these required columns:
 
    - `id uuid`
    - `office_id uuid` referencing `"Offices"(id)`
@@ -26,7 +36,7 @@
    `office_id`, `status`, and `is_active`. The model also accepts compatible
    legacy aliases.
 
-4. Public car and office images should be public Storage URLs, or signed URLs
+6. Public car and office images should be public Storage URLs, or signed URLs
    that remain valid while displayed.
 
 ## Implemented flows

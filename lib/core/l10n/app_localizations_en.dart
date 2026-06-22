@@ -394,4 +394,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noInternetMessage =>
       'Check your internet connection to continue using the app.';
+
+  @override
+  String get forgotPasswordTitle => 'Forgot password';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Enter your email and we will send you a password reset link';
+
+  @override
+  String get resetEmailHint => 'Enter your email';
+
+  @override
+  String get sendResetLink => 'Send reset link';
+
+  @override
+  String get backToLogin => 'Back to login';
+
+  @override
+  String get operationSuccessful => 'Operation completed successfully';
+
+  @override
+  String get passwordResetSuccessMessage =>
+      'A password reset link has been sent to your email.';
+
+  @override
+  String get emailNotRegistered => 'This email address is not registered.';
+
+  @override
+  String get passwordResetSetupRequired =>
+      'Password recovery needs to be activated in Supabase.';
 }

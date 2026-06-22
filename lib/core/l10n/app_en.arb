@@ -122,5 +122,14 @@
   ,"officeHasNoCars": "This office has no cars."
   ,"noInternetTitle": "No internet connection"
   ,"noInternetMessage": "Check your internet connection to continue using the app."
+  ,"forgotPasswordTitle": "Forgot password"
+  ,"forgotPasswordDescription": "Enter your email and we will send you a password reset link"
+  ,"resetEmailHint": "Enter your email"
+  ,"sendResetLink": "Send reset link"
+  ,"backToLogin": "Back to login"
+  ,"operationSuccessful": "Operation completed successfully"
+  ,"passwordResetSuccessMessage": "A password reset link has been sent to your email."
+  ,"emailNotRegistered": "This email address is not registered."
+  ,"passwordResetSetupRequired": "Password recovery needs to be activated in Supabase."
 
 }
