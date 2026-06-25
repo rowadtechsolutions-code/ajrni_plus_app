@@ -93,6 +93,12 @@ on public."Users" for insert
 to authenticated
 with check (auth.uid() = id);
 
+drop policy if exists "users_delete_own_profile" on public."Users";
+create policy "users_delete_own_profile"
+on public."Users" for delete
+to authenticated
+using (auth.uid() = id);
+
 drop policy if exists "offices_read_active_or_own" on public."Offices";
 create policy "offices_read_active_or_own"
 on public."Offices" for select

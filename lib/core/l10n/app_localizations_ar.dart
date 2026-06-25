@@ -419,4 +419,37 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get passwordResetSetupRequired =>
       'يجب تفعيل استعادة كلمة المرور في Supabase.';
+
+  @override
+  String get filter => 'فلترة';
+
+  @override
+  String get reset => 'إعادة الضبط';
+
+  @override
+  String get apply => 'تطبيق';
+
+  @override
+  String get manufacturer => 'المصنع';
+
+  @override
+  String get driveSystem => 'نظام الدفع';
+
+  @override
+  String get cylinders => 'عدد الإسطوانات';
+
+  @override
+  String get exteriorColor => 'اللون الخارجي';
+
+  @override
+  String get interiorColor => 'اللون الداخلي';
+
+  @override
+  String get region => 'المنطقة';
+
+  @override
+  String get noFilterOptions => 'لا توجد خيارات متاحة لهذا الفلتر.';
+
+  @override
+  String get accountDeleted => 'تم حذف الحساب بنجاح.';
 }

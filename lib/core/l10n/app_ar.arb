@@ -131,5 +131,16 @@
   ,"passwordResetSuccessMessage": "تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني."
   ,"emailNotRegistered": "البريد الإلكتروني غير مسجل."
   ,"passwordResetSetupRequired": "يجب تفعيل استعادة كلمة المرور في Supabase."
+  ,"filter": "فلترة"
+  ,"reset": "إعادة الضبط"
+  ,"apply": "تطبيق"
+  ,"manufacturer": "المصنع"
+  ,"driveSystem": "نظام الدفع"
+  ,"cylinders": "عدد الإسطوانات"
+  ,"exteriorColor": "اللون الخارجي"
+  ,"interiorColor": "اللون الداخلي"
+  ,"region": "المنطقة"
+  ,"noFilterOptions": "لا توجد خيارات متاحة لهذا الفلتر."
+  ,"accountDeleted": "تم حذف الحساب بنجاح."
 
 }

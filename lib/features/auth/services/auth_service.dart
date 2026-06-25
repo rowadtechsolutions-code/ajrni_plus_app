@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/constants/api_constants.dart';
+import '../../../core/constants/supabase_tables.dart';
 import '../../../core/enums/enums.dart';
 import '../../../core/services/cache/app_preferences.dart';
 import '../../offices/models/office_model.dart';
@@ -187,21 +188,61 @@ class AuthService {
 
   Future<void> deleteCurrentAccount() async {
     try {
+      final response = await _client.functions.invoke('delete-account');
+      // FunctionsResponse is the return type; if we get here the HTTP status is 2xx.
+      final data = response.data;
+      if (data is Map && data['error'] != null) {
+        throw AuthException(data['error'] as String);
+      }
+      return;
+    } on AuthException {
+      rethrow;
+    } on Exception {
+      // Edge function not deployed / network error — fall through to RPC.
+    }
+
+    try {
       final deleted = await _client.rpc('delete_user_account');
       if (deleted != true) {
-        throw const AuthException('account deletion failed');
+        throw const AuthException('حدث خطأ أثناء حذف الحساب');
       }
+      return;
     } on PostgrestException catch (error) {
-      // Compatibility with databases that still have the previous RPC name.
-      if (error.code == 'PGRST202' ||
-          error.message.toLowerCase().contains('could not find the function')) {
-        await _client.rpc('delete_current_user');
-      } else {
-        rethrow;
+      if (error.code != 'PGRST202' &&
+          !error.message.toLowerCase().contains('could not find the function')) {
+        throw AuthException(
+          error.message.contains('Authentication required')
+              ? 'يجب تسجيل الدخول أولاً'
+              : 'حدث خطأ أثناء حذف الحساب',
+        );
       }
     }
-    await _client.auth.signOut(scope: SignOutScope.local);
-    await AppPreferences().removeSession();
+
+    // Edge function + RPC both unavailable — delete using RLS policies.
+    try {
+      await _deleteFromClient();
+    } on AuthException {
+      rethrow;
+    } catch (e) {
+      throw AuthException(e.toString());
+    }
+  }
+
+  Future<void> _deleteFromClient() async {
+    if (_client.auth.currentUser == null) {
+      throw const AuthException('يجب تسجيل الدخول أولاً');
+    }
+    final userId = _client.auth.currentUser!.id;
+
+    await _client
+        .from(SupabaseTables.favorites)
+        .delete()
+        .eq('user_id', userId);
+
+    await _client
+        .from(SupabaseTables.users)
+        .delete()
+        .eq('id', userId);
   }
 
   Future<void> _cacheSession(AccountSession session) async {

@@ -8,10 +8,10 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../../../core/widgets/data_state_view.dart';
-import '../../../core/widgets/location_filter.dart';
 import '../../../core/widgets/shimmer_loading.dart';
 import '../providers/cars_provider.dart';
 import '../widgets/car_card.dart';
+import 'car_filters_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -49,11 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: TextField(
                         controller: _controller,
                         onChanged: (value) {
-                          if (value.isEmpty) {
-                            provider.clearFilters();
-                          } else {
-                            provider.applyFilters(search: value);
-                          }
+                          provider.applyFilters(search: value);
                         },
                         textAlignVertical: TextAlignVertical.center,
                         textInputAction: TextInputAction.search,
@@ -141,13 +137,14 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _filter(CarsProvider provider) async {
-    final value = await showLocationFilter(
-      context: context,
-      country: provider.country,
-      city: provider.city,
+    final didChange = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CarFiltersScreen(provider: provider),
+      ),
     );
-    if (value != null) {
-      provider.applyFilters(country: value.country, city: value.city);
+    if (didChange == true && provider.search.isEmpty) {
+      _controller.clear();
     }
   }
 }

@@ -7,10 +7,10 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/data_state_view.dart';
-import '../../../core/widgets/location_filter.dart';
 import '../../../core/widgets/shimmer_loading.dart';
 import '../providers/cars_provider.dart';
 import '../widgets/car_card.dart';
+import 'car_filters_screen.dart';
 
 class CarsScreen extends StatefulWidget {
   const CarsScreen({super.key});
@@ -40,9 +40,40 @@ class _CarsScreenState extends State<CarsScreen> {
         children: [
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(20.w, 20.h, 20.w, 16.h),
-            child: Text(
-              l.cars,
-              style: getMediumStyle(size: 15, color: AppColors.font02),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l.cars,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: getMediumStyle(size: 15, color: AppColors.font02),
+                  ),
+                ),
+                if (provider.hasActiveFilters) ...[
+                  SizedBox(width: 12.w),
+                  InkWell(
+                    onTap: () {
+                      _searchController.clear();
+                      provider.clearFilters();
+                    },
+                    borderRadius: BorderRadius.circular(8.r),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 4.h,
+                      ),
+                      child: Text(
+                        l.reset,
+                        style: getMediumStyle(
+                          size: 13,
+                          color: AppColors.primaryNormal,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
           Padding(
@@ -55,11 +86,7 @@ class _CarsScreenState extends State<CarsScreen> {
                     child: TextField(
                       controller: _searchController,
                       onChanged: (value) {
-                        if (value.isEmpty) {
-                          provider.clearFilters();
-                        } else {
-                          provider.applyFilters(search: value);
-                        }
+                        provider.applyFilters(search: value);
                       },
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
@@ -117,22 +144,33 @@ class _CarsScreenState extends State<CarsScreen> {
           SizedBox(height: 16.h),
           Expanded(
             child: provider.loading && cars.isEmpty
-                ? ListView.separated(
-                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
-                    itemCount: 3,
-                    separatorBuilder: (_, __) => SizedBox(height: 20.h),
-                    itemBuilder: (_, __) => const CardSkeleton(),
+                ? RefreshIndicator(
+                    onRefresh: provider.load,
+                    child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
+                      itemCount: 3,
+                      separatorBuilder: (_, __) => SizedBox(height: 20.h),
+                      itemBuilder: (_, __) => const CardSkeleton(),
+                    ),
                   )
                 : cars.isEmpty
-                ? DataStateView(
-                    title: l.noResults,
-                    subtitle: l.noResultsSubtitle,
-                    actionText: l.tryNow,
-                    onRetry: provider.load,
+                ? RefreshIndicator(
+                    onRefresh: provider.load,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: DataStateView(
+                        title: l.noResults,
+                        subtitle: l.noResultsSubtitle,
+                        actionText: l.tryNow,
+                        onRetry: provider.load,
+                      ),
+                    ),
                   )
                 : RefreshIndicator(
                     onRefresh: provider.load,
                     child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
                       itemCount: cars.length,
                       separatorBuilder: (_, __) => SizedBox(height: 20.h),
@@ -146,13 +184,14 @@ class _CarsScreenState extends State<CarsScreen> {
   }
 
   Future<void> _filter(CarsProvider provider) async {
-    final value = await showLocationFilter(
-      context: context,
-      country: provider.country,
-      city: provider.city,
+    final didChange = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CarFiltersScreen(provider: provider),
+      ),
     );
-    if (value != null) {
-      provider.applyFilters(country: value.country, city: value.city);
+    if (didChange == true && provider.search.isEmpty) {
+      _searchController.clear();
     }
   }
 }

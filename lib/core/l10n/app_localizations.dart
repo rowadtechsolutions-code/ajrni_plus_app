@@ -889,6 +889,72 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'يجب تفعيل استعادة كلمة المرور في Supabase.'**
   String get passwordResetSetupRequired;
+
+  /// No description provided for @filter.
+  ///
+  /// In ar, this message translates to:
+  /// **'فلترة'**
+  String get filter;
+
+  /// No description provided for @reset.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة الضبط'**
+  String get reset;
+
+  /// No description provided for @apply.
+  ///
+  /// In ar, this message translates to:
+  /// **'تطبيق'**
+  String get apply;
+
+  /// No description provided for @manufacturer.
+  ///
+  /// In ar, this message translates to:
+  /// **'المصنع'**
+  String get manufacturer;
+
+  /// No description provided for @driveSystem.
+  ///
+  /// In ar, this message translates to:
+  /// **'نظام الدفع'**
+  String get driveSystem;
+
+  /// No description provided for @cylinders.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد الإسطوانات'**
+  String get cylinders;
+
+  /// No description provided for @exteriorColor.
+  ///
+  /// In ar, this message translates to:
+  /// **'اللون الخارجي'**
+  String get exteriorColor;
+
+  /// No description provided for @interiorColor.
+  ///
+  /// In ar, this message translates to:
+  /// **'اللون الداخلي'**
+  String get interiorColor;
+
+  /// No description provided for @region.
+  ///
+  /// In ar, this message translates to:
+  /// **'المنطقة'**
+  String get region;
+
+  /// No description provided for @noFilterOptions.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد خيارات متاحة لهذا الفلتر.'**
+  String get noFilterOptions;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حذف الحساب بنجاح.'**
+  String get accountDeleted;
 }
 
 class _AppLocalizationsDelegate

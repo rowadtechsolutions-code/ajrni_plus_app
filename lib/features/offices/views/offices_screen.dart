@@ -111,22 +111,33 @@ class _OfficesScreenState extends State<OfficesScreen> {
           SizedBox(height: 16.h),
           Expanded(
             child: provider.loading && provider.offices.isEmpty
-                ? ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    itemCount: 3,
-                    separatorBuilder: (_, __) => SizedBox(height: 16.h),
-                    itemBuilder: (_, __) => const OfficeSkeleton(),
+                ? RefreshIndicator(
+                    onRefresh: provider.load,
+                    child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      itemCount: 3,
+                      separatorBuilder: (_, __) => SizedBox(height: 16.h),
+                      itemBuilder: (_, __) => const OfficeSkeleton(),
+                    ),
                   )
                 : provider.offices.isEmpty
-                ? DataStateView(
-                    title: l.noResults,
-                    subtitle: l.noResultsSubtitle,
-                    actionText: l.tryNow,
-                    onRetry: provider.load,
+                ? RefreshIndicator(
+                    onRefresh: provider.load,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: DataStateView(
+                        title: l.noResults,
+                        subtitle: l.noResultsSubtitle,
+                        actionText: l.tryNow,
+                        onRetry: provider.load,
+                      ),
+                    ),
                   )
                 : RefreshIndicator(
                     onRefresh: provider.load,
                     child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       itemCount: provider.offices.length,
                       separatorBuilder: (_, __) => SizedBox(height: 16.h),

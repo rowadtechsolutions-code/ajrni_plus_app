@@ -424,4 +424,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get passwordResetSetupRequired =>
       'Password recovery needs to be activated in Supabase.';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get manufacturer => 'Manufacturer';
+
+  @override
+  String get driveSystem => 'Drive system';
+
+  @override
+  String get cylinders => 'Cylinders';
+
+  @override
+  String get exteriorColor => 'Exterior color';
+
+  @override
+  String get interiorColor => 'Interior color';
+
+  @override
+  String get region => 'Region';
+
+  @override
+  String get noFilterOptions => 'No available options for this filter.';
+
+  @override
+  String get accountDeleted => 'Account deleted successfully.';
 }

@@ -238,35 +238,60 @@ class ProfileScreen extends StatelessWidget {
 
   Future<void> _deleteAccount(BuildContext context) async {
     final l = AppLocalizations.of(context)!;
-    await showDialog<void>(
+    final confirmed = await showConfirmationDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18.r),
-        ),
-        title: Text(
-          l.confirmDeleteTitle,
-          textAlign: TextAlign.center,
-          style: getSemiBoldStyle(size: 18, color: AppColors.black10),
-        ),
-        content: Text(
-          l.contactAdministrationToDelete,
-          textAlign: TextAlign.center,
-          style: getRegularStyle(size: 13, color: AppColors.font01),
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(
-              l.understood,
-              style: getSemiBoldStyle(size: 14, color: AppColors.primaryNormal),
+      title: l.confirmDeleteTitle,
+      message: l.confirmDeleteMessage,
+      confirmText: l.confirm,
+      cancelText: l.cancel,
+    );
+    if (!confirmed || !context.mounted) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.all(20.r),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(12.r),
             ),
+            child: const CircularProgressIndicator(color: AppColors.primaryNormal),
           ),
-        ],
+        ),
       ),
     );
+
+    try {
+      await AuthService().deleteCurrentAccount();
+      if (!context.mounted) return;
+      Navigator.of(context).pop();
+      if (!context.mounted) return;
+      await AuthService().signOut();
+      if (!context.mounted) return;
+      context.read<AuthProvider>().clear();
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l.accountDeleted),
+          backgroundColor: AppColors.primaryNormal,
+        ),
+      );
+      _toWelcome(context);
+    } catch (error) {
+      if (!context.mounted) return;
+      Navigator.of(context).pop();
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   void _toWelcome(BuildContext context) {

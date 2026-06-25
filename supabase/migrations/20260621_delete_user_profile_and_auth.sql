@@ -11,8 +11,10 @@ begin
     raise exception 'Authentication required';
   end if;
 
-  -- Both deletes run in the same transaction. If Auth deletion fails, the
-  -- profile deletion is rolled back automatically.
+  -- All deletes run in the same transaction.
+  delete from public."Favorites"
+  where user_id = current_user_id;
+
   delete from public."Users"
   where id = current_user_id;
 

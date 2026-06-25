@@ -131,5 +131,16 @@
   ,"passwordResetSuccessMessage": "A password reset link has been sent to your email."
   ,"emailNotRegistered": "This email address is not registered."
   ,"passwordResetSetupRequired": "Password recovery needs to be activated in Supabase."
+  ,"filter": "Filter"
+  ,"reset": "Reset"
+  ,"apply": "Apply"
+  ,"manufacturer": "Manufacturer"
+  ,"driveSystem": "Drive system"
+  ,"cylinders": "Cylinders"
+  ,"exteriorColor": "Exterior color"
+  ,"interiorColor": "Interior color"
+  ,"region": "Region"
+  ,"noFilterOptions": "No available options for this filter."
+  ,"accountDeleted": "Account deleted successfully."
 
 }
