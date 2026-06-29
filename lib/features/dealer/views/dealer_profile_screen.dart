@@ -1,3 +1,4 @@
+import 'package:arini_plus_app/core/widgets/custom_height_spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import '../../../core/constants/assets_app.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/services/cache/app_preferences.dart';
 import '../../../core/services/providers/language_provider.dart';
+import '../../../core/services/contact_launcher_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/confirmation_dialog.dart';
@@ -29,9 +31,14 @@ class DealerProfileScreen extends StatelessWidget {
     final office = context.watch<AuthProvider>().session?.office;
     return SafeArea(
       bottom: false,
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(20.r),
-        child: Column(
+      child: RefreshIndicator(
+        onRefresh: () async {
+          await context.read<AuthProvider>().refreshCurrentSession();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.all(20.r),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -63,17 +70,17 @@ class DealerProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  CustomHeightSpacer(height: 12.h),
                   Text(
                     office?.officeName ?? '',
                     style: getSemiBoldStyle(size: 18, color: AppColors.black10),
                   ),
-                  SizedBox(height: 4.h),
+                  CustomHeightSpacer(height: 4.h),
                   Text(
                     office?.email ?? '',
                     style: getRegularStyle(size: 12, color: AppColors.font01),
                   ),
-                  SizedBox(height: 3.h),
+                  CustomHeightSpacer(height: 3.h),
                   Text(
                     [
                       office?.city ?? '',
@@ -84,7 +91,7 @@ class DealerProfileScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 18.h),
+            CustomHeightSpacer(height: 18.h),
             _row(
               context,
               AppIcons.edit,
@@ -96,7 +103,7 @@ class DealerProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 12.h),
+            CustomHeightSpacer(height: 12.h),
             _row(
               context,
               AppIcons.globe,
@@ -106,7 +113,7 @@ class DealerProfileScreen extends StatelessWidget {
                   ? AppLocalizations.of(context)!.arabic
                   : 'English',
             ),
-            SizedBox(height: 12.h),
+            CustomHeightSpacer(height: 12.h),
             _row(
               context,
               AppIcons.info,
@@ -117,7 +124,7 @@ class DealerProfileScreen extends StatelessWidget {
                 LegalContent.about(context.read<LanguageProvider>().language),
               ),
             ),
-            SizedBox(height: 12.h),
+            CustomHeightSpacer(height: 12.h),
             _row(
               context,
               AppIcons.shield,
@@ -128,7 +135,7 @@ class DealerProfileScreen extends StatelessWidget {
                 LegalContent.privacy(context.read<LanguageProvider>().language),
               ),
             ),
-            SizedBox(height: 12.h),
+            CustomHeightSpacer(height: 12.h),
             _row(
               context,
               AppIcons.document,
@@ -139,7 +146,17 @@ class DealerProfileScreen extends StatelessWidget {
                 LegalContent.terms(context.read<LanguageProvider>().language),
               ),
             ),
-            SizedBox(height: 12.h),
+            CustomHeightSpacer(height: 12.h),
+            _row(
+              context,
+              AppIcons.whatsapp,
+              AppLocalizations.of(context)!.contactUs,
+              () => ContactLauncherService.whatsapp(
+                phone: '+968 76791559',
+                country: 'OM',
+              ),
+            ),
+            CustomHeightSpacer(height: 12.h),
             _row(
               context,
               AppIcons.logout,
@@ -149,6 +166,7 @@ class DealerProfileScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

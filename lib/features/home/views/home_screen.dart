@@ -38,6 +38,7 @@ class HomeScreen extends StatelessWidget {
       bottom: false,
       child: RefreshIndicator(
         onRefresh: () async {
+          await context.read<AuthProvider>().refreshCurrentSession();
           final auth = context.read<AuthProvider>();
           await context.read<HomeProvider>().load(
             country: auth.session?.country ?? '',

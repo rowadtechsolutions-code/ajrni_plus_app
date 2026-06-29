@@ -1,7 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../../core/constants/api_constants.dart';
-import '../../../core/constants/supabase_tables.dart';
+
 import '../../../core/enums/enums.dart';
 import '../../../core/services/cache/app_preferences.dart';
 import '../../offices/models/office_model.dart';
@@ -218,31 +217,13 @@ class AuthService {
       }
     }
 
-    // Edge function + RPC both unavailable — delete using RLS policies.
-    try {
-      await _deleteFromClient();
-    } on AuthException {
-      rethrow;
-    } catch (e) {
-      throw AuthException(e.toString());
-    }
-  }
-
-  Future<void> _deleteFromClient() async {
-    if (_client.auth.currentUser == null) {
-      throw const AuthException('يجب تسجيل الدخول أولاً');
-    }
-    final userId = _client.auth.currentUser!.id;
-
-    await _client
-        .from(SupabaseTables.favorites)
-        .delete()
-        .eq('user_id', userId);
-
-    await _client
-        .from(SupabaseTables.users)
-        .delete()
-        .eq('id', userId);
+    // Both Edge Function and RPC unavailable. Don't delete anything from the
+    // client — it can never delete auth.users (needs service_role). Partial
+    // deletion would leave the account in a broken state where the profile
+    // is gone but the auth entry remains, preventing re-registration.
+    throw const AuthException(
+      'تعذر حذف الحساب بالكامل. يرجى المحاولة مرة أخرى.',
+    );
   }
 
   Future<void> _cacheSession(AccountSession session) async {

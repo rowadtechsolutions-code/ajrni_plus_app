@@ -32,9 +32,14 @@ class ProfileScreen extends StatelessWidget {
 
     return SafeArea(
       bottom: false,
-      child: SingleChildScrollView(
-        padding: EdgeInsetsDirectional.fromSTEB(20.w, 20.h, 20.w, 24.h),
-        child: Column(
+      child: RefreshIndicator(
+        onRefresh: () async {
+          await context.read<AuthProvider>().refreshCurrentSession();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsetsDirectional.fromSTEB(20.w, 20.h, 20.w, 24.h),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -53,13 +58,6 @@ class ProfileScreen extends StatelessWidget {
               onTap: () => isGuest
                   ? _open(context, const LoginScreen())
                   : _open(context, const EditProfileScreen()),
-            ),
-            SizedBox(height: 12.h),
-            _row(
-              AppIcons.dashboard,
-              l.myRequests,
-              onTap: () =>
-                  _openContent(context, l.myRequests, l.myRequestsEmpty),
             ),
             SizedBox(height: 14.h),
             Text(
@@ -140,6 +138,7 @@ class ProfileScreen extends StatelessWidget {
             ],
           ],
         ),
+      ),
       ),
     );
   }

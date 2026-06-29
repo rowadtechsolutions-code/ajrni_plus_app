@@ -156,7 +156,10 @@ class _DealerCarsScreenState extends State<DealerCarsScreen> {
                   );
                 }
                 return RefreshIndicator(
-                  onRefresh: () async => _reload(),
+                  onRefresh: () async {
+                    _reload();
+                    await _future;
+                  },
                   child: ListView.separated(
                     padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
                     itemCount: cars.length,

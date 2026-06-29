@@ -69,7 +69,10 @@ class _DealerRequestsScreenState extends State<DealerRequestsScreen> {
                   );
                 }
                 return RefreshIndicator(
-                  onRefresh: () async => setState(_load),
+                  onRefresh: () async {
+                    setState(_load);
+                    await _future;
+                  },
                   child: ListView.separated(
                     padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
                     itemCount: requests.length,
