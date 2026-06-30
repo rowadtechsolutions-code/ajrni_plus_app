@@ -178,23 +178,7 @@ class CarDetailsScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 9.w,
-                            vertical: 4.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.success,
-                            borderRadius: BorderRadius.circular(13.r),
-                          ),
-                          child: Text(
-                            l.available,
-                            style: getMediumStyle(
-                              size: 10,
-                              color: AppColors.white,
-                            ),
-                          ),
-                        ),
+                        _statusBadge(l),
                       ],
                     ),
                     SizedBox(height: 14.h),
@@ -454,6 +438,25 @@ class CarDetailsScreen extends StatelessWidget {
       path.isEmpty ? AssetsApp.hyundaiAvante : path,
       fit: BoxFit.cover,
       alignment: Alignment.center,
+    );
+  }
+
+  Widget _statusBadge(AppLocalizations l) {
+    final (String text, Color color) = switch (car.status) {
+      'maintenance' => (l.maintenance, AppColors.error),
+      'reserved' => (l.reserved, AppColors.warning),
+      _ => (l.available, AppColors.success),
+    };
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(13.r),
+      ),
+      child: Text(
+        text,
+        style: getMediumStyle(size: 10, color: AppColors.white),
+      ),
     );
   }
 }
