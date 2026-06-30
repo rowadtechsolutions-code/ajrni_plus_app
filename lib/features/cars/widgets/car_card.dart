@@ -57,7 +57,7 @@ class CarCard extends StatelessWidget with NavHelper {
                     child: _carImage(),
                   ),
                 ),
-                Positioned(top: 9.h, right: 9.w, child: _badge(l.available)),
+                Positioned(top: 9.h, right: 9.w, child: _badge(car.status, l)),
                 Positioned(
                   top: 9.h,
                   left: 9.w,
@@ -205,11 +205,16 @@ class CarCard extends StatelessWidget with NavHelper {
     );
   }
 
-  Widget _badge(String text) {
+  Widget _badge(String status, AppLocalizations l) {
+    final (String text, Color color) = switch (status) {
+      'maintenance' => (l.maintenance, AppColors.error),
+      'reserved' => (l.reserved, AppColors.warning),
+      _ => (l.available, AppColors.success),
+    };
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: AppColors.success,
+        color: color,
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Text(

@@ -1,5 +1,6 @@
 import 'package:arini_plus_app/core/widgets/custom_height_spacer.dart';
 import 'package:arini_plus_app/features/get_start/views/welcome_screen.dart';
+import 'package:arini_plus_app/services/fcm_token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -57,6 +58,7 @@ class _SplashScreenState extends State<SplashScreen> with NavHelper {
         AppPreferences().getter(CacheKeys.guestMode) as bool? ?? false;
     if (!mounted) return;
     Provider.of<AuthProvider>(context, listen: false).setSession(session);
+    FcmTokenService().syncCurrentDeviceToken();
 
     await minimumDisplayTime;
 

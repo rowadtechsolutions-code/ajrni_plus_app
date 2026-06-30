@@ -782,11 +782,35 @@ abstract class AppLocalizations {
   /// **'الإشعارات'**
   String get notifications;
 
+  /// No description provided for @maintenance.
+  ///
+  /// In ar, this message translates to:
+  /// **'صيانة'**
+  String get maintenance;
+
+  /// No description provided for @reserved.
+  ///
+  /// In ar, this message translates to:
+  /// **'محجوز'**
+  String get reserved;
+
   /// No description provided for @noNotifications.
   ///
   /// In ar, this message translates to:
   /// **'لا توجد إشعارات حاليًا'**
   String get noNotifications;
+
+  /// No description provided for @markAllAsRead.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحديد الكل كمقروء'**
+  String get markAllAsRead;
+
+  /// No description provided for @retry.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة المحاولة'**
+  String get retry;
 
   /// No description provided for @accountDeletionFailed.
   ///

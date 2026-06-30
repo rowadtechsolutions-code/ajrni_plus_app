@@ -364,7 +364,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications => 'Notifications';
 
   @override
+  String get maintenance => 'Maintenance';
+
+  @override
+  String get reserved => 'Reserved';
+
+  @override
   String get noNotifications => 'No notifications yet';
+
+  @override
+  String get markAllAsRead => 'Mark all as read';
+
+  @override
+  String get retry => 'Retry';
 
   @override
   String get accountDeletionFailed =>

@@ -2,6 +2,7 @@ import 'package:arini_plus_app/core/widgets/custom_height_spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:arini_plus_app/services/fcm_token_service.dart';
 
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/assets_app.dart';
@@ -17,18 +18,34 @@ import '../../../core/widgets/app_network_image.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/services/auth_service.dart';
 import '../../get_start/views/welcome_screen.dart';
+import '../../notifications/providers/notifications_provider.dart';
+import '../../notifications/views/notifications_screen.dart';
 import '../../profile/data/legal_content.dart';
 import '../../profile/views/content_screen.dart';
 import '../helpers/dealer_text.dart';
 import 'dealer_edit_profile_screen.dart';
 
-class DealerProfileScreen extends StatelessWidget {
+class DealerProfileScreen extends StatefulWidget {
   const DealerProfileScreen({super.key});
+
+  @override
+  State<DealerProfileScreen> createState() => _DealerProfileScreenState();
+}
+
+class _DealerProfileScreenState extends State<DealerProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<NotificationsProvider>().loadUnreadCount();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final t = DealerText.of(context);
     final office = context.watch<AuthProvider>().session?.office;
+    final unread = context.watch<NotificationsProvider>().unreadCount;
     return SafeArea(
       bottom: false,
       child: RefreshIndicator(
@@ -159,6 +176,23 @@ class DealerProfileScreen extends StatelessWidget {
             CustomHeightSpacer(height: 12.h),
             _row(
               context,
+              AppIcons.notification,
+              AppLocalizations.of(context)!.notifications,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const NotificationsScreen(),
+                  ),
+                ).then((_) {
+                  context.read<NotificationsProvider>().loadUnreadCount();
+                });
+              },
+              trailing: unread > 0 ? (unread > 99 ? '99+' : '$unread') : null,
+            ),
+            CustomHeightSpacer(height: 12.h),
+            _row(
+              context,
               AppIcons.logout,
               t.logout,
               () => _logout(context),
@@ -252,6 +286,7 @@ class DealerProfileScreen extends StatelessWidget {
       cancelText: l.cancel,
     );
     if (!confirmed || !context.mounted) return;
+    await FcmTokenService().deactivateCurrentToken();
     await AuthService().signOut();
     await AppPreferences().removeSession();
     if (!context.mounted) return;

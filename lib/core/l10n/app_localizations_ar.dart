@@ -360,7 +360,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifications => 'الإشعارات';
 
   @override
+  String get maintenance => 'صيانة';
+
+  @override
+  String get reserved => 'محجوز';
+
+  @override
   String get noNotifications => 'لا توجد إشعارات حاليًا';
+
+  @override
+  String get markAllAsRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get retry => 'إعادة المحاولة';
 
   @override
   String get accountDeletionFailed =>

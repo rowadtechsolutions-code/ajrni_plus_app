@@ -1,4 +1,5 @@
 import 'package:arini_plus_app/core/constants/app_icons.dart';
+import 'package:arini_plus_app/services/fcm_token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -231,6 +232,7 @@ class _LoginScreenState extends State<LoginScreen> with NavHelper {
       );
       if (!mounted) return;
       provider.setSession(session);
+      FcmTokenService().syncCurrentDeviceToken();
       final target = session.type == AccountType.office
           ? const DealerDashboardScreen()
           : const MainHomeScreen();
