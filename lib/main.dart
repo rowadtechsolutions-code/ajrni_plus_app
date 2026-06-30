@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/constants/api_constants.dart';
 import 'core/l10n/app_localizations.dart';
@@ -24,11 +25,19 @@ import 'features/offices/providers/offices_provider.dart';
 import 'features/get_start/views/splash_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin localNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+const String _notificationPermissionRequestedKey =
+    'notification_permission_requested';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   WidgetsBinding.instance.deferFirstFrame();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(
@@ -58,18 +67,71 @@ Future<void> _initializeServices() async {
     publishableKey: ApiConstants.apiKey,
   );
 
+  unawaited(_initializeNotificationsSafely());
+}
+
+Future<void> _initializeNotificationsSafely() async {
+  AndroidFlutterLocalNotificationsPlugin? androidPlugin;
+  try {
+    androidPlugin = await _initializeLocalNotifications()
+        .timeout(const Duration(seconds: 4));
+  } catch (error, stackTrace) {
+    debugPrint('Local notification initialization skipped: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
+
+  unawaited(
+    _requestNotificationPermissionIfNeeded(androidPlugin)
+        .catchError((error, stackTrace) {
+      debugPrint('Notification permission request skipped: $error');
+      debugPrintStack(stackTrace: stackTrace);
+    }),
+  );
+
+  unawaited(
+    FcmTokenService()
+        .init()
+        .timeout(const Duration(seconds: 5))
+        .catchError((error, stackTrace) {
+      debugPrint('FCM token init failed: $error');
+    }),
+  );
+}
+
+Future<void> _requestNotificationPermissionIfNeeded(
+  AndroidFlutterLocalNotificationsPlugin? androidPlugin,
+) async {
   final messaging = FirebaseMessaging.instance;
+  final preferences = await SharedPreferences.getInstance();
+  final permissionRequestedBefore =
+      preferences.getBool(_notificationPermissionRequestedKey) ?? false;
+  final settings = await messaging.getNotificationSettings();
+  final alreadyAllowed =
+      settings.authorizationStatus == AuthorizationStatus.authorized ||
+      settings.authorizationStatus == AuthorizationStatus.provisional;
+  if (alreadyAllowed) return;
+  if (permissionRequestedBefore &&
+      settings.authorizationStatus != AuthorizationStatus.notDetermined) {
+    return;
+  }
+
   await messaging.requestPermission(
     alert: true,
     badge: true,
     sound: true,
   );
+  await androidPlugin?.requestNotificationsPermission();
+  await preferences.setBool(_notificationPermissionRequestedKey, true);
+}
 
-  await FcmTokenService().init();
-
+Future<AndroidFlutterLocalNotificationsPlugin?>
+_initializeLocalNotifications() async {
   const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
   const iosSettings = DarwinInitializationSettings();
-  const initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+  const initSettings = InitializationSettings(
+    android: androidSettings,
+    iOS: iosSettings,
+  );
   await localNotificationsPlugin.initialize(
     settings: initSettings,
     onDidReceiveNotificationResponse: (response) {
@@ -85,6 +147,7 @@ Future<void> _initializeServices() async {
     description: 'Notifications for Ajrni Plus',
     importance: Importance.max,
     playSound: true,
+    enableVibration: true,
   );
   final androidPlugin = localNotificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
@@ -105,6 +168,7 @@ Future<void> _initializeServices() async {
             importance: Importance.max,
             priority: Priority.high,
             playSound: true,
+            enableVibration: true,
           ),
           iOS: DarwinNotificationDetails(),
         ),
@@ -113,7 +177,7 @@ Future<void> _initializeServices() async {
     }
   });
 
-  await androidPlugin?.requestNotificationsPermission();
+  return androidPlugin;
 }
 
 class MyApp extends StatelessWidget {
