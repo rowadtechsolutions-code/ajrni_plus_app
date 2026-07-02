@@ -8,6 +8,28 @@ import '../../offices/services/office_service.dart';
 import '../models/banner_model.dart';
 import '../services/banner_service.dart';
 
+List<CarModel> fairDistributeCarsByOffice(List<CarModel> cars) {
+  if (cars.length < 3) return cars;
+  final grouped = <String, List<CarModel>>{};
+  for (final car in cars) {
+    grouped.putIfAbsent(car.officeId, () => []).add(car);
+  }
+  final ids = grouped.keys.toList();
+  final result = <CarModel>[];
+  var hasRemaining = true;
+  while (hasRemaining) {
+    hasRemaining = false;
+    for (final id in ids) {
+      final list = grouped[id]!;
+      if (list.isNotEmpty) {
+        result.add(list.removeAt(0));
+        hasRemaining = true;
+      }
+    }
+  }
+  return result;
+}
+
 class HomeProvider extends ChangeNotifier {
   final OfficeService _officeService;
   final CarService _carService;
@@ -57,18 +79,20 @@ class HomeProvider extends ChangeNotifier {
             LocationMatcher.city(office.city, city);
         return matchesCountry && matchesCity;
       }).toList();
-      _homeCars = allCars.where((car) {
-        if (car.office == null) return false;
-        final matchesCountry =
-            country == null ||
-            country.isEmpty ||
-            LocationMatcher.country(car.office!.country, country);
-        final matchesCity =
-            city == null ||
-            city.isEmpty ||
-            LocationMatcher.city(car.office!.city, city);
-        return matchesCountry && matchesCity;
-      }).toList();
+      _homeCars = fairDistributeCarsByOffice(
+        allCars.where((car) {
+          if (car.office == null) return false;
+          final matchesCountry =
+              country == null ||
+              country.isEmpty ||
+              LocationMatcher.country(car.office!.country, country);
+          final matchesCity =
+              city == null ||
+              city.isEmpty ||
+              LocationMatcher.city(car.office!.city, city);
+          return matchesCountry && matchesCity;
+        }).toList(),
+      );
     } catch (error) {
       _error = error.toString();
     } finally {

@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/constants/api_constants.dart';
-
+import '../../../core/constants/supabase_tables.dart';
 import '../../../core/enums/enums.dart';
 import '../../../core/services/cache/app_preferences.dart';
 import '../../offices/models/office_model.dart';
@@ -50,6 +50,27 @@ class AuthService {
 
   Future<RegistrationResult> register(RegistrationData data) async {
     final email = data.email.trim().toLowerCase();
+
+    final crn = data.commercialRegistrationNumber.trim();
+    if (data.type == AccountType.office && crn.isNotEmpty) {
+      try {
+        final existing = await _client
+            .from(SupabaseTables.offices)
+            .select('id')
+            .eq('commercial_registration_number', crn)
+            .maybeSingle();
+        if (existing != null) {
+          throw const AuthException(
+            'رقم السجل التجاري مسجل مسبقًا، يرجى التواصل مع الدعم.',
+          );
+        }
+      } on AuthException {
+        rethrow;
+      } catch (e) {
+        print('CRN pre-check failed (will rely on fallback): $e');
+      }
+    }
+
     final metadata = <String, dynamic>{
       'account_type': data.type.name,
       'full_name': data.type == AccountType.user ? data.name.trim() : null,
@@ -105,7 +126,27 @@ class AuthService {
     var session = await loadAccount(authUser.id);
     if (session == null) {
       if (fallbackSession.office != null) {
-        await _offices.upsertOffice(fallbackSession.office!);
+        try {
+          await _client
+              .from(SupabaseTables.offices)
+              .insert(fallbackSession.office!.toJson());
+        } catch (e) {
+          await _client.auth.signOut();
+          print('Office insert fallback failed: ${e.runtimeType} $e');
+          if (e is PostgrestException &&
+              (e.code == '23505' ||
+                  e.message.toLowerCase().contains('duplicate key') ||
+                  e.message.toLowerCase().contains(
+                        'commercial_registration_number',
+                      ))) {
+            throw const AuthException(
+              'رقم السجل التجاري مسجل مسبقًا، يرجى التواصل مع الدعم.',
+            );
+          }
+          throw AuthException(
+            e is AuthException ? e.message : e.toString(),
+          );
+        }
       } else {
         await _users.upsertUser(fallbackSession.user!);
       }

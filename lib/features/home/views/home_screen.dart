@@ -149,7 +149,7 @@ class HomeScreen extends StatelessWidget {
                       )
                     : ListView.separated(
                         scrollDirection: Axis.horizontal,
-                        itemCount: cars.length > 5 ? 5 : cars.length,
+                        itemCount: cars.length > 8 ? 8 : cars.length,
                         separatorBuilder: (_, __) => SizedBox(width: 10.w),
                         itemBuilder: (_, index) =>
                             CarCard(car: cars[index], compact: true),

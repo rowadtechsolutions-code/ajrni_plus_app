@@ -2,13 +2,31 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 
+const _duplicateCrnMessage =
+    'رقم السجل التجاري مسجل مسبقًا، يرجى التواصل مع الدعم.';
+
 class AuthErrorMapper {
   AuthErrorMapper._();
 
   static String message(Object error, AppLocalizations l) {
-    final value = error is AuthException
-        ? error.message.toLowerCase()
-        : error.toString().toLowerCase();
+    if (error is PostgrestException) {
+      print('PostgrestException: code=${error.code} message=${error.message}');
+      if (error.code == '23505' ||
+          error.message.toLowerCase().contains('duplicate key') ||
+          error.message.toLowerCase().contains(
+                'commercial_registration_number',
+              )) {
+        return _duplicateCrnMessage;
+      }
+    }
+
+    if (error is AuthException) {
+      print('AuthException: message=${error.message}');
+      return error.message;
+    }
+
+    final value = error.toString().toLowerCase();
+    print('Unhandled error: ${error.runtimeType} $error');
 
     if (value.contains('invalid login credentials') ||
         value.contains('invalid credentials')) {
