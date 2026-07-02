@@ -444,6 +444,7 @@ class CarDetailsScreen extends StatelessWidget {
   Widget _statusBadge(AppLocalizations l) {
     final (String text, Color color) = switch (car.status) {
       'maintenance' => (l.maintenance, AppColors.error),
+      'rented' => (l.rented, AppColors.warning),
       'reserved' => (l.reserved, AppColors.warning),
       _ => (l.available, AppColors.success),
     };

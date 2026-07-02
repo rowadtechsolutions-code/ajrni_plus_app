@@ -208,6 +208,7 @@ class CarCard extends StatelessWidget with NavHelper {
   Widget _badge(String status, AppLocalizations l) {
     final (String text, Color color) = switch (status) {
       'maintenance' => (l.maintenance, AppColors.error),
+      'rented' => (l.rented, AppColors.warning),
       'reserved' => (l.reserved, AppColors.warning),
       _ => (l.available, AppColors.success),
     };

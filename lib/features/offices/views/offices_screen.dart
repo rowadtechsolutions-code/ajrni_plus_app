@@ -21,17 +21,37 @@ class OfficesScreen extends StatefulWidget {
 
 class _OfficesScreenState extends State<OfficesScreen> {
   final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    final provider = context.read<OfficesProvider>();
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
+        provider.hasMore &&
+        !provider.isLoadingMore) {
+      provider.loadMore();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final provider = context.watch<OfficesProvider>();
+    final offices = provider.offices;
     return SafeArea(
       bottom: false,
       child: Column(
@@ -110,9 +130,12 @@ class _OfficesScreenState extends State<OfficesScreen> {
           ),
           SizedBox(height: 16.h),
           Expanded(
-            child: provider.loading && provider.offices.isEmpty
+            child: provider.loading && offices.isEmpty
                 ? RefreshIndicator(
-                    onRefresh: provider.load,
+                    onRefresh: () => provider.load(
+                      country: provider.country,
+                      city: provider.city,
+                    ),
                     child: ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -121,28 +144,45 @@ class _OfficesScreenState extends State<OfficesScreen> {
                       itemBuilder: (_, __) => const OfficeSkeleton(),
                     ),
                   )
-                : provider.offices.isEmpty
+                : offices.isEmpty && !provider.loading
                 ? RefreshIndicator(
-                    onRefresh: provider.load,
+                    onRefresh: () => provider.load(
+                      country: provider.country,
+                      city: provider.city,
+                    ),
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: DataStateView(
                         title: l.noResults,
                         subtitle: l.noResultsSubtitle,
                         actionText: l.tryNow,
-                        onRetry: provider.load,
+                        onRetry: () => provider.load(
+                          country: provider.country,
+                          city: provider.city,
+                        ),
                       ),
                     ),
                   )
                 : RefreshIndicator(
-                    onRefresh: provider.load,
+                    onRefresh: () => provider.load(
+                      country: provider.country,
+                      city: provider.city,
+                    ),
                     child: ListView.separated(
+                      controller: _scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      itemCount: provider.offices.length,
+                      itemCount: offices.length + (provider.hasMore ? 1 : 0),
                       separatorBuilder: (_, __) => SizedBox(height: 16.h),
-                      itemBuilder: (_, index) =>
-                          OfficeCard(office: provider.offices[index]),
+                      itemBuilder: (_, index) {
+                        if (index >= offices.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        return OfficeCard(office: offices[index]);
+                      },
                     ),
                   ),
           ),

@@ -21,11 +21,30 @@ class CarsScreen extends StatefulWidget {
 
 class _CarsScreenState extends State<CarsScreen> {
   final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    final provider = context.read<CarsProvider>();
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
+        provider.hasMore &&
+        !provider.isLoadingMore) {
+      provider.loadMore();
+    }
   }
 
   @override
@@ -145,7 +164,10 @@ class _CarsScreenState extends State<CarsScreen> {
           Expanded(
             child: provider.loading && cars.isEmpty
                 ? RefreshIndicator(
-                    onRefresh: provider.load,
+                    onRefresh: () => provider.load(
+                      country: provider.country,
+                      city: provider.city,
+                    ),
                     child: ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
@@ -154,27 +176,45 @@ class _CarsScreenState extends State<CarsScreen> {
                       itemBuilder: (_, __) => const CardSkeleton(),
                     ),
                   )
-                : cars.isEmpty
+                : cars.isEmpty && !provider.loading
                 ? RefreshIndicator(
-                    onRefresh: provider.load,
+                    onRefresh: () => provider.load(
+                      country: provider.country,
+                      city: provider.city,
+                    ),
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: DataStateView(
                         title: l.noResults,
                         subtitle: l.noResultsSubtitle,
                         actionText: l.tryNow,
-                        onRetry: provider.load,
+                        onRetry: () => provider.load(
+                          country: provider.country,
+                          city: provider.city,
+                        ),
                       ),
                     ),
                   )
                 : RefreshIndicator(
-                    onRefresh: provider.load,
+                    onRefresh: () => provider.load(
+                      country: provider.country,
+                      city: provider.city,
+                    ),
                     child: ListView.separated(
+                      controller: _scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
-                      itemCount: cars.length,
+                      itemCount: cars.length + (provider.hasMore ? 1 : 0),
                       separatorBuilder: (_, __) => SizedBox(height: 20.h),
-                      itemBuilder: (_, index) => CarCard(car: cars[index]),
+                      itemBuilder: (_, index) {
+                        if (index >= cars.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        return CarCard(car: cars[index]);
+                      },
                     ),
                   ),
           ),

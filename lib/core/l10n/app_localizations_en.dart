@@ -370,6 +370,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reserved => 'Reserved';
 
   @override
+  String get rented => 'Rented';
+
+  @override
   String get noNotifications => 'No notifications yet';
 
   @override

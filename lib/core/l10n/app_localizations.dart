@@ -794,6 +794,12 @@ abstract class AppLocalizations {
   /// **'محجوز'**
   String get reserved;
 
+  /// No description provided for @rented.
+  ///
+  /// In ar, this message translates to:
+  /// **'مؤجر'**
+  String get rented;
+
   /// No description provided for @noNotifications.
   ///
   /// In ar, this message translates to:

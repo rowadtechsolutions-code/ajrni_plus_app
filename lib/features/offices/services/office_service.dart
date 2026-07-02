@@ -33,6 +33,35 @@ class OfficeService {
     return response.map(OfficeModel.fromJson).toList();
   }
 
+  Future<List<OfficeModel>> getActiveOfficesPaginated({
+    int limit = 12,
+    int offset = 0,
+    String search = '',
+    String country = '',
+    String city = '',
+  }) async {
+    var query = _client
+        .from(SupabaseTables.offices)
+        .select()
+        .eq('is_active', true);
+    final term = search.trim();
+    if (term.isNotEmpty) {
+      query = query.or(
+        'office_name.ilike.%$term%,bio.ilike.%$term%,city.ilike.%$term%,country.ilike.%$term%',
+      );
+    }
+    if (country.trim().isNotEmpty) {
+      query = query.ilike('country', '%${country.trim()}%');
+    }
+    if (city.trim().isNotEmpty) {
+      query = query.ilike('city', '%${city.trim()}%');
+    }
+    final response = await query
+        .order('created_at', ascending: false)
+        .range(offset, offset + limit - 1);
+    return response.map(OfficeModel.fromJson).toList();
+  }
+
   Future<void> updateOffice(OfficeModel office) async {
     await _client
         .from(SupabaseTables.offices)

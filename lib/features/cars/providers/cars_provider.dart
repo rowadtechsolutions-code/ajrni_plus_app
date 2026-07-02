@@ -85,15 +85,20 @@ class CarsProvider extends ChangeNotifier {
   List<CarModel> _allCars = const [];
   List<CarModel> _cars = const [];
   bool _loading = false;
+  bool _isLoadingMore = false;
+  bool _hasMore = true;
   String? _error;
   String _search = '';
   String _country = '';
   String _city = '';
   CarFilterSelection _filters = const CarFilterSelection();
+  static const int _pageSize = 12;
 
   List<CarModel> get cars => _cars;
   List<CarModel> get allCars => _allCars;
   bool get loading => _loading;
+  bool get isLoadingMore => _isLoadingMore;
+  bool get hasMore => _hasMore;
   String? get error => _error;
   String get search => _search;
   String get country => _country;
@@ -105,16 +110,64 @@ class CarsProvider extends ChangeNotifier {
     if (search != null) _search = search;
     if (country != null) _country = country;
     if (city != null) _city = city;
+    _allCars = const [];
+    _cars = const [];
+    _hasMore = true;
     _loading = true;
     _error = null;
     notifyListeners();
     try {
-      _allCars = await _service.getActiveCars();
+      final fetched = await _service.getActiveCarsPaginated(
+        limit: _pageSize,
+        offset: 0,
+        search: _search,
+        brands: _filters.brands,
+        models: _filters.models,
+        years: _filters.years,
+        transmissions: _filters.transmissions,
+        fuels: _filters.fuels,
+        colors: _filters.colors,
+        cities: _filters.cities,
+        minPrice: _filters.minPrice,
+        maxPrice: _filters.maxPrice,
+      );
+      _allCars = fetched;
+      if (fetched.length < _pageSize) _hasMore = false;
       _apply();
     } catch (error) {
       _error = error.toString();
     } finally {
       _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (_isLoadingMore || !_hasMore) return;
+    _isLoadingMore = true;
+    notifyListeners();
+    try {
+      final fetched = await _service.getActiveCarsPaginated(
+        limit: _pageSize,
+        offset: _allCars.length,
+        search: _search,
+        brands: _filters.brands,
+        models: _filters.models,
+        years: _filters.years,
+        transmissions: _filters.transmissions,
+        fuels: _filters.fuels,
+        colors: _filters.colors,
+        cities: _filters.cities,
+        minPrice: _filters.minPrice,
+        maxPrice: _filters.maxPrice,
+      );
+      if (fetched.length < _pageSize) _hasMore = false;
+      _allCars = [..._allCars, ...fetched];
+      _apply();
+    } catch (_) {
+      _hasMore = false;
+    } finally {
+      _isLoadingMore = false;
       notifyListeners();
     }
   }
@@ -125,23 +178,37 @@ class CarsProvider extends ChangeNotifier {
     String? city,
     CarFilterSelection? filters,
   }) {
+    if (search != null && search != _search) {
+      _search = search;
+      load(search: search);
+      return;
+    }
     if (search != null) _search = search;
     if (country != null) _country = country;
     if (city != null) _city = city;
-    if (filters != null) _filters = filters;
+    if (filters != null) {
+      _filters = filters;
+      load();
+      return;
+    }
     _apply();
     notifyListeners();
   }
 
   void clearFilters({bool keepLocation = false}) {
+    final hadActiveFilters = _search.trim().isNotEmpty || !_filters.isEmpty;
     _search = '';
     _filters = const CarFilterSelection();
     if (!keepLocation) {
       _country = '';
       _city = '';
     }
-    _apply();
-    notifyListeners();
+    if (hadActiveFilters) {
+      load();
+    } else {
+      _apply();
+      notifyListeners();
+    }
   }
 
   void _apply() {

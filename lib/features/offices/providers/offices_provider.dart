@@ -13,14 +13,19 @@ class OfficesProvider extends ChangeNotifier {
   List<OfficeModel> _allOffices = const [];
   List<OfficeModel> _offices = const [];
   bool _loading = false;
+  bool _isLoadingMore = false;
+  bool _hasMore = true;
   String? _error;
   String _search = '';
   String _country = '';
   String _city = '';
+  static const int _pageSize = 12;
 
   List<OfficeModel> get offices => _offices;
   List<OfficeModel> get allOffices => _allOffices;
   bool get loading => _loading;
+  bool get isLoadingMore => _isLoadingMore;
+  bool get hasMore => _hasMore;
   String? get error => _error;
   String get search => _search;
   String get country => _country;
@@ -30,11 +35,22 @@ class OfficesProvider extends ChangeNotifier {
     if (search != null) _search = search;
     if (country != null) _country = country;
     if (city != null) _city = city;
+    _allOffices = const [];
+    _offices = const [];
+    _hasMore = true;
     _loading = true;
     _error = null;
     notifyListeners();
     try {
-      _allOffices = await _service.getActiveOffices();
+      final fetched = await _service.getActiveOfficesPaginated(
+        limit: _pageSize,
+        offset: 0,
+        search: _search,
+        country: _country,
+        city: _city,
+      );
+      _allOffices = fetched;
+      if (fetched.length < _pageSize) _hasMore = false;
       _apply();
     } catch (error) {
       _error = error.toString();
@@ -44,22 +60,64 @@ class OfficesProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> loadMore() async {
+    if (_isLoadingMore || !_hasMore) return;
+    _isLoadingMore = true;
+    notifyListeners();
+    try {
+      final fetched = await _service.getActiveOfficesPaginated(
+        limit: _pageSize,
+        offset: _allOffices.length,
+        search: _search,
+        country: _country,
+        city: _city,
+      );
+      if (fetched.length < _pageSize) _hasMore = false;
+      _allOffices = [..._allOffices, ...fetched];
+      _apply();
+    } catch (_) {
+      _hasMore = false;
+    } finally {
+      _isLoadingMore = false;
+      notifyListeners();
+    }
+  }
+
   void applyFilters({String? search, String? country, String? city}) {
+    if (search != null && search != _search) {
+      _search = search;
+      load(search: search);
+      return;
+    }
+    final locationChanged = (country != null && country != _country) ||
+        (city != null && city != _city);
     if (search != null) _search = search;
     if (country != null) _country = country;
     if (city != null) _city = city;
-    _apply();
-    notifyListeners();
+    if (locationChanged) {
+      load();
+    } else {
+      _apply();
+      notifyListeners();
+    }
   }
 
   void clearFilters({bool keepLocation = false}) {
+    final hadActiveFilters =
+        _search.trim().isNotEmpty ||
+        _country.trim().isNotEmpty ||
+        _city.trim().isNotEmpty;
     _search = '';
     if (!keepLocation) {
       _country = '';
       _city = '';
     }
-    _apply();
-    notifyListeners();
+    if (hadActiveFilters) {
+      load();
+    } else {
+      _apply();
+      notifyListeners();
+    }
   }
 
   void _apply() {

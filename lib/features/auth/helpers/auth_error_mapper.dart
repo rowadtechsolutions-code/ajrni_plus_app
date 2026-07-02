@@ -20,13 +20,14 @@ class AuthErrorMapper {
       }
     }
 
+    final value = error is AuthException
+        ? error.message.toLowerCase()
+        : error.toString().toLowerCase();
     if (error is AuthException) {
       print('AuthException: message=${error.message}');
-      return error.message;
+    } else {
+      print('Unhandled error: ${error.runtimeType} $error');
     }
-
-    final value = error.toString().toLowerCase();
-    print('Unhandled error: ${error.runtimeType} $error');
 
     if (value.contains('invalid login credentials') ||
         value.contains('invalid credentials')) {
@@ -71,6 +72,7 @@ class AuthErrorMapper {
         value.contains('account deletion failed')) {
       return l.accountDeletionFailed;
     }
+    if (error is AuthException) return error.message;
     return l.unexpectedError;
   }
 }

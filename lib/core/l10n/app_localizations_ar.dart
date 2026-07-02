@@ -366,6 +366,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reserved => 'محجوز';
 
   @override
+  String get rented => 'مؤجر';
+
+  @override
   String get noNotifications => 'لا توجد إشعارات حاليًا';
 
   @override
