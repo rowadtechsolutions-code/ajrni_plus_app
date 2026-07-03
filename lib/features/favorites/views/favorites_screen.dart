@@ -8,7 +8,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/views/login_screen.dart';
-import '../../cars/providers/cars_provider.dart';
 import '../../cars/widgets/car_card.dart';
 import '../providers/favorites_provider.dart';
 
@@ -19,12 +18,7 @@ class FavoritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final auth = context.watch<AuthProvider>();
-    final favoriteIds = context.watch<FavoritesProvider>().ids;
-    final favorites = context
-        .watch<CarsProvider>()
-        .allCars
-        .where((car) => favoriteIds.contains(car.id))
-        .toList();
+    final favorites = context.watch<FavoritesProvider>().cars;
     return SafeArea(
       bottom: false,
       child: Column(

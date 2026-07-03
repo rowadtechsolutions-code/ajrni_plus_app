@@ -108,6 +108,16 @@ class CarService {
     }).toList();
   }
 
+  Future<List<CarModel>> getCarsByIds(Set<String> ids) async {
+    if (ids.isEmpty) return [];
+    final response = await _client
+        .from(SupabaseTables.cars)
+        .select()
+        .inFilter('id', ids.toList());
+    final rawCars = List<Map<String, dynamic>>.from(response);
+    return _buildCars(rawCars, '');
+  }
+
   Future<List<CarModel>> getCarsByOffice(String officeId) async {
     final response = await _client
         .from(SupabaseTables.cars)

@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen> with NavHelper {
                 ),
                 CustomHeightSpacer(height: 16),
                 Text(
-                  'Version 1.0.0+3',
+                  'Version 1.0.0+4',
                   style: getMediumStyle(size: 13.sp, color: AppColors.white),
                 ),
                 CustomHeightSpacer(height: 24),
