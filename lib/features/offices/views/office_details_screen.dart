@@ -117,7 +117,7 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                         Text(
                           office?.bio.isNotEmpty == true
                               ? office!.bio
-                              : l.officeDescription,
+                              : l.trustedRentalOffice,
                           textAlign: TextAlign.right,
                           style: getRegularStyle(
                             size: 12,

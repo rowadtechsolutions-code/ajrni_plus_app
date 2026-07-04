@@ -63,8 +63,8 @@ class OfficeCard extends StatelessWidget with NavHelper {
                       SizedBox(height: 3.h),
                       Text(
                         office?.bio.isNotEmpty == true
-                            ? office!.bio
-                            : l.officeDescription,
+                            ? office!.bio.split('\n').first
+                            : l.trustedRentalOffice,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: getRegularStyle(

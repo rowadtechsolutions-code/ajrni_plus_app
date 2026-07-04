@@ -344,6 +344,12 @@ abstract class AppLocalizations {
   /// **'باليوم'**
   String get perDay;
 
+  /// No description provided for @perMonth.
+  ///
+  /// In ar, this message translates to:
+  /// **'بالشهر'**
+  String get perMonth;
+
   /// No description provided for @call.
   ///
   /// In ar, this message translates to:
@@ -493,6 +499,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'مكتب الخليج أفضل مكتب لتأجير السيارات'**
   String get officeDescription;
+
+  /// No description provided for @trustedRentalOffice.
+  ///
+  /// In ar, this message translates to:
+  /// **'مكتب تأجير موثوق'**
+  String get trustedRentalOffice;
 
   /// No description provided for @locationValue.
   ///

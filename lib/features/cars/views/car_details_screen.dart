@@ -167,7 +167,11 @@ class CarDetailsScreen extends StatelessWidget {
                                   ),
                                   SizedBox(width: 4.w),
                                   Text(
-                                    '/ ${l.perDay}',
+                                    car.rentalType.startsWith('month') ||
+                                            car.rentalType.contains('شهري') ||
+                                            car.rentalType.contains('month')
+                                        ? '/ ${l.perMonth}'
+                                        : '/ ${l.perDay}',
                                     style: getRegularStyle(
                                       size: 11,
                                       color: AppColors.font01,
