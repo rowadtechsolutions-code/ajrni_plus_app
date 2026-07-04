@@ -15,20 +15,31 @@ class FcmTokenService {
   String? _cachedToken;
 
   Future<void> init() async {
-    if (_listenerRegistered) return;
+    if (_listenerRegistered) {
+      await _refreshToken();
+      return;
+    }
     _listenerRegistered = true;
 
     final messaging = FirebaseMessaging.instance;
-    final currentToken = await messaging.getToken();
-    if (currentToken != null && currentToken != _cachedToken) {
-      _cachedToken = currentToken;
-      await _syncIfLoggedIn(currentToken);
-    }
-
     messaging.onTokenRefresh.listen((newToken) {
       _cachedToken = newToken;
       _syncIfLoggedIn(newToken);
     });
+
+    await _refreshToken();
+  }
+
+  Future<void> _refreshToken() async {
+    final messaging = FirebaseMessaging.instance;
+    final currentToken = await messaging.getToken();
+    debugPrint(
+      'FCM token: ${currentToken == null ? 'null (check iOS permission/APNs)' : '${currentToken.substring(0, 12)}...'}',
+    );
+    if (currentToken != null && currentToken != _cachedToken) {
+      _cachedToken = currentToken;
+      await _syncIfLoggedIn(currentToken);
+    }
   }
 
   Future<String?> getToken() async {
@@ -38,8 +49,12 @@ class FcmTokenService {
   }
 
   Future<void> syncCurrentDeviceToken() async {
+    _cachedToken = null;
     final token = await getToken();
-    if (token == null) return;
+    if (token == null) {
+      debugPrint('FCM sync skipped: token is null');
+      return;
+    }
     await _syncIfLoggedIn(token);
   }
 
