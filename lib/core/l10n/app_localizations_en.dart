@@ -135,6 +135,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get perDay => 'per day';
 
   @override
+  String get perMonth => 'per month';
+
+  @override
   String get call => 'Call';
 
   @override
@@ -209,6 +212,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get officeDescription => 'Al Khaleej is a trusted car rental office';
+
+  @override
+  String get trustedRentalOffice => 'Trusted rental office';
 
   @override
   String get locationValue => 'Muscat - Oman';

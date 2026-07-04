@@ -103,17 +103,29 @@ class CarCard extends StatelessWidget with NavHelper {
             SizedBox(height: 8.h),
             Row(
               children: [
-                Text(
-                  _price(l),
-                  style: getSemiBoldStyle(
-                    size: 16,
-                    color: AppColors.primaryNormal,
-                  ),
-                ),
-                SizedBox(width: 4.w),
-                Text(
-                  '/ ${l.perDay}',
-                  style: getRegularStyle(size: 12, color: AppColors.font01),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _price(l),
+                      style: getSemiBoldStyle(
+                        size: 16,
+                        color: AppColors.primaryNormal,
+                      ),
+                    ),
+                    Text(
+                      car.rentalType.startsWith('month') ||
+                              car.rentalType.contains('شهري') ||
+                              car.rentalType.contains('month')
+                          ? l.perMonth
+                          : l.perDay,
+                      style: getRegularStyle(
+                        size: 11,
+                        color: AppColors.font01,
+                      ),
+                    ),
+                  ],
                 ),
                 const Spacer(),
                 SizedBox(

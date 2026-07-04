@@ -134,6 +134,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get perDay => 'باليوم';
 
   @override
+  String get perMonth => 'بالشهر';
+
+  @override
   String get call => 'اتصال';
 
   @override
@@ -208,6 +211,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get officeDescription => 'مكتب الخليج أفضل مكتب لتأجير السيارات';
+
+  @override
+  String get trustedRentalOffice => 'مكتب تأجير موثوق';
 
   @override
   String get locationValue => 'مسقط - عمان';
