@@ -21,6 +21,8 @@ class CarService {
     int limit = 12,
     int offset = 0,
     String search = '',
+    String country = '',
+    String city = '',
     Set<String> brands = const {},
     Set<String> models = const {},
     Set<String> years = const {},
@@ -56,6 +58,21 @@ class CarService {
           .from(SupabaseTables.offices)
           .select('id')
           .inFilter('city', cities.toList());
+      final ids = officeRows.map<String>((o) => o['id'] as String).toList();
+      if (ids.isEmpty) return [];
+      query = query.inFilter('office_id', ids);
+    }
+    final officeCountry = country.trim();
+    final officeCity = city.trim();
+    if (officeCountry.isNotEmpty || officeCity.isNotEmpty) {
+      var officeQuery = _client.from(SupabaseTables.offices).select('id');
+      if (officeCountry.isNotEmpty) {
+        officeQuery = officeQuery.ilike('country', '%$officeCountry%');
+      }
+      if (officeCity.isNotEmpty) {
+        officeQuery = officeQuery.ilike('city', '%$officeCity%');
+      }
+      final officeRows = await officeQuery;
       final ids = officeRows.map<String>((o) => o['id'] as String).toList();
       if (ids.isEmpty) return [];
       query = query.inFilter('office_id', ids);

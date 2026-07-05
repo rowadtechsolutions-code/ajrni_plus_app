@@ -23,25 +23,34 @@ class MainHomeScreen extends StatefulWidget {
 
 class _MainHomeScreenState extends State<MainHomeScreen> {
   int _index = 0;
+  String _lastCountry = '';
+  String _lastCity = '';
+
+  void _loadByCity() {
+    final auth = context.read<AuthProvider>();
+    final country = auth.session?.country ?? '';
+    final city = auth.session?.city ?? '';
+    if (city == _lastCity && country == _lastCountry) return;
+    _lastCity = city;
+    _lastCountry = country;
+    context.read<HomeProvider>().load(country: country, city: city);
+    context.read<CarsProvider>().load(country: country, city: city);
+    context.read<OfficesProvider>().load(country: country, city: city);
+    if (auth.isLoggedIn) {
+      context.read<FavoritesProvider>().load();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final auth = context.read<AuthProvider>();
-      final country = auth.session?.country ?? '';
-      final city = auth.session?.city ?? '';
-      context.read<HomeProvider>().load(country: country, city: city);
-      context.read<CarsProvider>().load(country: country, city: city);
-      context.read<OfficesProvider>().load(country: country, city: city);
-      if (auth.isLoggedIn) {
-        context.read<FavoritesProvider>().load();
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadByCity());
   }
 
   @override
   Widget build(BuildContext context) {
+    context.watch<AuthProvider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadByCity());
     final screens = [
       HomeScreen(onNavigate: (value) => setState(() => _index = value)),
       const CarsScreen(),
