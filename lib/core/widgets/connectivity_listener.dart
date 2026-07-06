@@ -107,9 +107,10 @@ class ConnectivityController {
 
     if (isOnline) {
       _dismiss();
-    } else {
-      _show(navigatorKey);
+      return;
     }
+
+    _show(navigatorKey);
   }
 
   static void _startPeriodicChecks() {
@@ -144,8 +145,13 @@ class ConnectivityController {
     _isOnline = null;
   }
 
+  static void _onDialogClosed() {
+    _dialogContext = null;
+    _isDialogShowing = false;
+  }
+
   static void _show(GlobalKey<NavigatorState> navigatorKey) {
-    if (_isDialogShowing) return;
+    if (_isOnline != false || _isDialogShowing) return;
     _isDialogShowing = true;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -163,54 +169,55 @@ class ConnectivityController {
 
       showDialog<void>(
         context: context,
-        barrierDismissible: false,
+        barrierDismissible: true,
         useRootNavigator: true,
         builder: (dialogContext) {
           _dialogContext = dialogContext;
           return PopScope(
             canPop: false,
-            child: AlertDialog(
-              backgroundColor: AppColors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              title: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.wifi_off_rounded,
-                    size: 48,
-                    color: AppColors.error,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    l?.noInternetTitle ?? 'No internet connection',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.black10,
+            child: GestureDetector(
+              onTap: () => Navigator.of(dialogContext, rootNavigator: true).pop(),
+              behavior: HitTestBehavior.opaque,
+              child: AlertDialog(
+                backgroundColor: AppColors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                title: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.wifi_off_rounded,
+                      size: 48,
+                      color: AppColors.error,
                     ),
+                    const SizedBox(height: 12),
+                    Text(
+                      l?.noInternetTitle ?? 'No internet connection',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.black10,
+                      ),
+                    ),
+                  ],
+                ),
+                content: Text(
+                  l?.noInternetMessage ??
+                      'Check your connection to continue using the app.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.font01,
                   ),
-                ],
-              ),
-              content: Text(
-                l?.noInternetMessage ??
-                    'Check your connection to continue using the app.',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.font01,
                 ),
               ),
             ),
           );
         },
-      ).then((_) {
-        _dialogContext = null;
-        _isDialogShowing = false;
-      });
+      ).then((_) => _onDialogClosed());
     });
   }
 
@@ -219,11 +226,16 @@ class ConnectivityController {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final context = _dialogContext;
-      if (context == null || !context.mounted) return;
+      if (context == null || !context.mounted) {
+        _onDialogClosed();
+        return;
+      }
 
       final navigator = Navigator.of(context, rootNavigator: true);
       if (navigator.canPop()) {
         navigator.pop();
+      } else {
+        _onDialogClosed();
       }
     });
   }
