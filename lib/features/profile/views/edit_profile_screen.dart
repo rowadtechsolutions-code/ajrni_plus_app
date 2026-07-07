@@ -112,12 +112,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         hintText: 'XXXXXXXX',
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
-                        isRequired: true,
+                        isRequired:
+                            context.read<AuthProvider>().session?.user == null,
                         prefixIcon: _buildPhoneCodePrefix(context),
                         validator: (value) {
+                          final phone = value?.trim() ?? '';
+                          if (phone.isEmpty &&
+                              context.read<AuthProvider>()
+                                      .session
+                                      ?.user !=
+                                  null) {
+                            return null;
+                          }
                           final phoneCountry = _codeToCountry[_phoneCode] ?? '';
                           return FormValidators.gulfPhone(
-                            '$_phoneCode${value ?? ''}',
+                            '$_phoneCode$phone',
                             phoneCountry,
                             l.invalidPhone,
                           );
@@ -249,9 +258,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (session.user != null) {
         final user = session.user!.copyWith(
           fullName: _nameController.text.trim(),
-          phoneNumber: FormValidators.normalizePhone(
-            '$_phoneCode${_phoneController.text}',
-          ),
+          phoneNumber: _phoneController.text.trim().isEmpty
+              ? ''
+              : FormValidators.normalizePhone(
+                  '$_phoneCode${_phoneController.text}',
+                ),
           country: _country,
           city: _city,
         );

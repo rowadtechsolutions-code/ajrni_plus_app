@@ -147,16 +147,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 CustomHeightSpacer(height: 14),
                 MyTextField(
+                  key: ValueKey('phone_${_isOffice ? "office" : "user"}'),
                   label: l.phoneNumber,
-                  isRequired: true,
+                  isRequired: _isOffice,
                   hintText: 'XXXXXXXX',
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   prefixIcon: _buildPhoneCodePrefix(context),
                   validator: (value) {
+                    final phone = value?.trim() ?? '';
+                    if (!_isOffice && phone.isEmpty) return null;
                     final phoneCountry = _codeToCountry[_phoneCode] ?? '';
                     return FormValidators.gulfPhone(
-                      '$_phoneCode${value ?? ''}',
+                      '$_phoneCode$phone',
                       phoneCountry,
                       l.invalidPhone,
                     );
@@ -367,9 +370,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           type: _isOffice ? AccountType.office : AccountType.user,
           name: _nameController.text,
           email: _emailController.text,
-          phoneNumber: FormValidators.normalizePhone(
-            '$_phoneCode${_phoneController.text}',
-          ),
+          phoneNumber: _phoneController.text.trim().isEmpty
+              ? ''
+              : FormValidators.normalizePhone(
+                  '$_phoneCode${_phoneController.text}',
+                ),
           country: _country!,
           city: _city!,
           password: _passwordController.text,
