@@ -149,5 +149,5 @@
   ,"region": "Region"
   ,"noFilterOptions": "No available options for this filter."
   ,"accountDeleted": "Account deleted successfully."
-
+  ,"dealerPhoneHelperText": "This phone number will be used by customers to contact your rental office."
 }

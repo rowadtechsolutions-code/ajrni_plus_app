@@ -473,4 +473,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountDeleted => 'تم حذف الحساب بنجاح.';
+
+  @override
+  String get dealerPhoneHelperText =>
+      'سيتم استخدام هذا الرقم لتمكين العملاء من التواصل مع مكتب التأجير.';
 }

@@ -997,6 +997,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تم حذف الحساب بنجاح.'**
   String get accountDeleted;
+
+  /// No description provided for @dealerPhoneHelperText.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيتم استخدام هذا الرقم لتمكين العملاء من التواصل مع مكتب التأجير.'**
+  String get dealerPhoneHelperText;
 }
 
 class _AppLocalizationsDelegate

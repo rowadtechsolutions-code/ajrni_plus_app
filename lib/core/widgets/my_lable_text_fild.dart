@@ -25,6 +25,7 @@ class MyTextField extends StatefulWidget {
   final double textSize;
   final bool compact;
   final bool enabled;
+  final Widget? labelSuffix;
 
   const MyTextField({
     super.key,
@@ -41,6 +42,7 @@ class MyTextField extends StatefulWidget {
     this.maxLines = 1,
     this.validator,
     this.icon,
+    this.labelSuffix,
     this.labelSize = 14,
     this.hintSize = 12,
     this.fieldHeight = 52,
@@ -187,6 +189,7 @@ class _MyTextFieldState extends State<MyTextField> {
                     color: AppColors.error,
                   ),
                 ),
+              if (widget.labelSuffix != null) widget.labelSuffix!,
             ],
           ),
         SizedBox(height: widget.labelSpacing.h),

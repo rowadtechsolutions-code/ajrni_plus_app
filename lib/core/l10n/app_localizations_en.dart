@@ -478,4 +478,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountDeleted => 'Account deleted successfully.';
+
+  @override
+  String get dealerPhoneHelperText =>
+      'This phone number will be used by customers to contact your rental office.';
 }

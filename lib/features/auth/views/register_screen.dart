@@ -150,6 +150,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   key: ValueKey('phone_${_isOffice ? "office" : "user"}'),
                   label: l.phoneNumber,
                   isRequired: _isOffice,
+                  labelSuffix: _isOffice
+                      ? GestureDetector(
+                          onTap: () => _showPhoneInfoDialog(context, l),
+                          child: Padding(
+                            padding:  EdgeInsetsDirectional.only(start: 8.h),
+                            child: Icon(
+                              Icons.info_outline_rounded,
+                              size: 20.sp,
+                              color: AppColors.primaryNormal,
+                            ),
+                          ),
+                        )
+                      : null,
                   hintText: 'XXXXXXXX',
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
@@ -165,6 +178,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     );
                   },
                 ),
+                if (_isOffice) ...[
+                  CustomHeightSpacer(height: 4.h),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Text(
+                      l.dealerPhoneHelperText,
+                      textAlign: TextAlign.start,
+                      style: getRegularStyle(
+                        size: 11,
+                        color: AppColors.hint,
+                      ),
+                    ),
+                  )
+                ],
                 CustomHeightSpacer(height: 14),
                 Row(
                   children: [
@@ -405,5 +432,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message), backgroundColor: color));
+  }
+
+  void _showPhoneInfoDialog(BuildContext context, AppLocalizations l) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        title: Row(
+          children: [
+            Icon(Icons.info_outline_rounded, size: 22.sp, color: AppColors.primaryNormal),
+            SizedBox(width: 8.w),
+            Text(l.phoneNumber, style: getMediumStyle(size: 14)),
+          ],
+        ),
+        content: Text(
+          isArabic
+              ? 'رقم الهاتف إلزامي لأنه وسيلة التواصل الأساسية بين العملاء ومكتب التأجير، وسيظهر للعملاء للتواصل مع مكتبك.'
+              : 'Phone number is required because it is the primary contact method between customers and your rental office. This number will be visible to customers for contacting your business.',
+          style: getRegularStyle(size: 13, color: AppColors.font01),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l.understood, style: getMediumStyle(size: 13, color: AppColors.primaryNormal)),
+          ),
+        ],
+      ),
+    );
   }
 }
