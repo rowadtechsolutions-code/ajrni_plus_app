@@ -15,9 +15,9 @@ import '../../../core/widgets/my_button.dart';
 import '../../../core/widgets/my_lable_text_fild.dart';
 import '../../../core/widgets/selection_bottom_sheet.dart';
 import '../../../core/widgets/app_network_image.dart';
-import '../../../data/country_city_data.dart';
 import '../../auth/models/account_session.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../location/services/location_service.dart';
 import '../../offices/services/office_service.dart';
 import '../helpers/dealer_text.dart';
 
@@ -334,23 +334,21 @@ class _DealerEditProfileScreenState extends State<DealerEditProfileScreen>
 
   String _countryLabel(bool isArabic) {
     if (_country.isEmpty) return '';
-    final item = CountryCityData.countryList.firstWhere(
-      (country) => country['key'] == _country,
-      orElse: () => {'key': _country, 'name_ar': _country, 'name_en': _country},
-    );
-    return item[isArabic ? 'name_ar' : 'name_en'] ?? _country;
+    return LocationService.countryName(_country, isArabic);
   }
 
   Future<void> _chooseCountry(DealerText t) async {
+    final countries = await _loadCountries(t);
+    if (countries == null) return;
     final selected = await showSelectionBottomSheet<String>(
       context: context,
       title: t.ar ? 'اختر الدولة' : 'Choose country',
       selectedValue: _country,
-      items: CountryCityData.countryList
+      items: countries
           .map(
             (country) => SelectionItem(
-              value: country['key']!,
-              label: country[t.ar ? 'name_ar' : 'name_en']!,
+              value: country.code,
+              label: t.ar ? country.nameAr : country.nameEn,
             ),
           )
           .toList(),
@@ -367,13 +365,18 @@ class _DealerEditProfileScreenState extends State<DealerEditProfileScreen>
       _message(t.ar ? 'اختر الدولة أولًا' : 'Choose a country first');
       return;
     }
+    final cities = await _loadCities(t, _country);
+    if (cities == null) return;
     final selected = await showSelectionBottomSheet<String>(
       context: context,
       title: t.ar ? 'اختر المدينة' : 'Choose city',
       selectedValue: _city,
-      items: CountryCityData.citiesFor(
-        _country,
-      ).map((city) => SelectionItem(value: city, label: city)).toList(),
+      items: cities
+          .map((city) => SelectionItem(
+                value: city.nameAr,
+                label: t.ar ? city.nameAr : city.nameEn,
+              ))
+          .toList(),
     );
     if (selected != null && mounted) setState(() => _city = selected);
   }
@@ -399,5 +402,25 @@ class _DealerEditProfileScreenState extends State<DealerEditProfileScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: AppColors.error),
     );
+  }
+
+  Future<List<Country>?> _loadCountries(DealerText t) async {
+    try {
+      return await LocationService.getCountries();
+    } catch (e) {
+      debugPrint('LocationService.getCountries error: $e');
+      _message(t.ar ? 'حدث خطأ أثناء تحميل الدول.' : 'Failed to load countries.');
+      return null;
+    }
+  }
+
+  Future<List<City>?> _loadCities(DealerText t, String countryCode) async {
+    try {
+      return await LocationService.getCities(countryCode);
+    } catch (e) {
+      debugPrint('LocationService.getCities($countryCode) error: $e');
+      _message(t.ar ? 'حدث خطأ أثناء تحميل المدن.' : 'Failed to load cities.');
+      return null;
+    }
   }
 }

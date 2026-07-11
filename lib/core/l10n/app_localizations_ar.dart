@@ -477,4 +477,14 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get dealerPhoneHelperText =>
       'سيتم استخدام هذا الرقم لتمكين العملاء من التواصل مع مكتب التأجير.';
+
+  @override
+  String get updateAvailableTitle => 'تحديث جديد متاح';
+
+  @override
+  String get updateAvailableDescription =>
+      'يرجى تحديث التطبيق إلى أحدث إصدار للمتابعة';
+
+  @override
+  String get updateNow => 'تحديث الآن';
 }

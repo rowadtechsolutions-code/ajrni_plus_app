@@ -1,8 +1,11 @@
 import 'package:arini_plus_app/core/widgets/custom_height_spacer.dart';
 import 'package:arini_plus_app/features/get_start/views/welcome_screen.dart';
+import 'package:arini_plus_app/features/update/views/force_update_screen.dart';
 import 'package:arini_plus_app/services/fcm_token_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/assets_app.dart';
 import '../../../../core/helpers/nav_helper.dart';
@@ -15,6 +18,7 @@ import '../../auth/providers/auth_provider.dart';
 import '../../auth/services/auth_service.dart';
 import '../../dealer/views/dealer_dashboard_screen.dart';
 import '../../home/views/main_home_screen.dart';
+import '../../update/services/update_service.dart';
 
 class SplashScreen extends StatefulWidget {
   final Future<void> initialization;
@@ -27,6 +31,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with NavHelper {
   bool _splashImageReady = false;
+  String _appVersion = '';
 
   @override
   void initState() {
@@ -51,6 +56,17 @@ class _SplashScreenState extends State<SplashScreen> with NavHelper {
     await widget.initialization;
     if (!mounted) return;
 
+    PackageInfo? packageInfo;
+    try {
+      packageInfo = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      setState(() {
+        _appVersion = 'Version ${packageInfo!.version}+${packageInfo.buildNumber}';
+      });
+    } catch (_) {
+      if (!mounted) return;
+    }
+
     context.read<LanguageProvider>().loadSavedLanguage();
 
     final session = await AuthService().restoreSession();
@@ -63,6 +79,26 @@ class _SplashScreenState extends State<SplashScreen> with NavHelper {
     await minimumDisplayTime;
 
     if (!mounted) return;
+
+    if (packageInfo != null) {
+      final platform = defaultTargetPlatform == TargetPlatform.android
+          ? 'android'
+          : 'ios';
+      final needUpdate = await UpdateService.check(
+        currentVersion: packageInfo.version,
+        currentBuild: int.tryParse(packageInfo.buildNumber) ?? 0,
+        platform: platform,
+      );
+      if (!mounted) return;
+      if (needUpdate != null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => ForceUpdateScreen(appVersion: needUpdate),
+          ),
+        );
+        return;
+      }
+    }
 
     jump(
       context,
@@ -95,7 +131,7 @@ class _SplashScreenState extends State<SplashScreen> with NavHelper {
                 ),
                 CustomHeightSpacer(height: 16),
                 Text(
-                  'Version 1.0.0+6',
+                  _appVersion.isNotEmpty ? _appVersion : 'Version ...',
                   style: getMediumStyle(size: 13.sp, color: AppColors.white),
                 ),
                 CustomHeightSpacer(height: 24),

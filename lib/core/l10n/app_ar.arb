@@ -150,4 +150,7 @@
   ,"noFilterOptions": "لا توجد خيارات متاحة لهذا الفلتر."
   ,"accountDeleted": "تم حذف الحساب بنجاح."
   ,"dealerPhoneHelperText": "سيتم استخدام هذا الرقم لتمكين العملاء من التواصل مع مكتب التأجير."
+  ,"updateAvailableTitle": "تحديث جديد متاح"
+  ,"updateAvailableDescription": "يرجى تحديث التطبيق إلى أحدث إصدار للمتابعة"
+  ,"updateNow": "تحديث الآن"
 }

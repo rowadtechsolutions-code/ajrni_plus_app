@@ -150,4 +150,7 @@
   ,"noFilterOptions": "No available options for this filter."
   ,"accountDeleted": "Account deleted successfully."
   ,"dealerPhoneHelperText": "This phone number will be used by customers to contact your rental office."
+  ,"updateAvailableTitle": "New Update Available"
+  ,"updateAvailableDescription": "Please update the app to the latest version to continue"
+  ,"updateNow": "Update Now"
 }

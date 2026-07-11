@@ -11,4 +11,8 @@ class SupabaseTables {
   static const String imagesBucket = 'images';
   static const String carsFolder = 'cars';
   static const String officesBucket = 'Offices';
+
+  static const String countries = 'countries';
+  static const String cities = 'cities';
+  static const String appVersions = 'app_versions';
 }

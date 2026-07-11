@@ -22,10 +22,40 @@ import '../../../core/widgets/data_state_view.dart';
 import '../../../core/widgets/shimmer_loading.dart';
 import '../../../core/widgets/app_network_image.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final ValueChanged<int>? onNavigate;
 
   const HomeScreen({super.key, this.onNavigate});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _guestInitialRefreshDone = false;
+
+  Future<void> _refreshHomeData() async {
+    await context.read<AuthProvider>().refreshCurrentSession();
+    if (!mounted) return;
+    final auth = context.read<AuthProvider>();
+    await context.read<HomeProvider>().load(
+      country: auth.session?.country ?? '',
+      city: auth.session?.city ?? '',
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final session = context.read<AuthProvider>().session;
+      if (session == null && !_guestInitialRefreshDone) {
+        _guestInitialRefreshDone = true;
+        _refreshHomeData();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +67,7 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       bottom: false,
       child: RefreshIndicator(
-        onRefresh: () async {
-          await context.read<AuthProvider>().refreshCurrentSession();
-          final auth = context.read<AuthProvider>();
-          await context.read<HomeProvider>().load(
-            country: auth.session?.country ?? '',
-            city: auth.session?.city ?? '',
-          );
-        },
+        onRefresh: _refreshHomeData,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: EdgeInsetsDirectional.fromSTEB(20.w, 20.h, 20.w, 20.h),
@@ -120,7 +143,7 @@ class HomeScreen extends StatelessWidget {
               _sectionHeader(
                 l.nearbyCars,
                 l.showAll,
-                onTap: () => onNavigate?.call(1),
+                onTap: () => widget.onNavigate?.call(1),
               ),
               SizedBox(height: 12.h),
               SizedBox(
@@ -159,7 +182,7 @@ class HomeScreen extends StatelessWidget {
               _sectionHeader(
                 l.nearbyOffices,
                 l.showAll,
-                onTap: () => onNavigate?.call(2),
+                onTap: () => widget.onNavigate?.call(2),
               ),
               SizedBox(height: 12.h),
               if (homeProvider.loading && offices.isEmpty)

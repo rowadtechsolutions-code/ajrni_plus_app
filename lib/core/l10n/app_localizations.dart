@@ -1003,6 +1003,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'سيتم استخدام هذا الرقم لتمكين العملاء من التواصل مع مكتب التأجير.'**
   String get dealerPhoneHelperText;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحديث جديد متاح'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableDescription.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى تحديث التطبيق إلى أحدث إصدار للمتابعة'**
+  String get updateAvailableDescription;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحديث الآن'**
+  String get updateNow;
 }
 
 class _AppLocalizationsDelegate

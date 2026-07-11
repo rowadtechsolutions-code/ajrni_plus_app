@@ -482,4 +482,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dealerPhoneHelperText =>
       'This phone number will be used by customers to contact your rental office.';
+
+  @override
+  String get updateAvailableTitle => 'New Update Available';
+
+  @override
+  String get updateAvailableDescription =>
+      'Please update the app to the latest version to continue';
+
+  @override
+  String get updateNow => 'Update Now';
 }

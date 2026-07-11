@@ -14,6 +14,7 @@ import '../../../data/country_city_data.dart';
 import '../../auth/models/account_session.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/services/user_service.dart';
+import '../../location/services/location_service.dart';
 import '../../offices/services/office_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -172,25 +173,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String _countryLabel(BuildContext context) {
     if (_country == null) return '';
     final ar = Localizations.localeOf(context).languageCode == 'ar';
-    return CountryCityData.countryList.firstWhere(
-      (item) => item['key'] == _country,
-    )[ar ? 'name_ar' : 'name_en']!;
+    return LocationService.countryName(_country!, ar);
   }
 
   Future<void> _chooseCountry(BuildContext context) async {
     final l = AppLocalizations.of(context)!;
     final ar = Localizations.localeOf(context).languageCode == 'ar';
+    final countries = await _loadCountries(context, l);
+    if (countries == null) return;
     final value = await showSelectionBottomSheet<String>(
       context: context,
       title: l.chooseCountry,
       selectedValue: _country,
-      items: CountryCityData.countryList
-          .map(
-            (item) => SelectionItem(
-              value: item['key']!,
-              label: item[ar ? 'name_ar' : 'name_en']!,
-            ),
-          )
+      items: countries
+          .map((item) => SelectionItem(
+                value: item.code,
+                label: ar ? item.nameAr : item.nameEn,
+              ))
           .toList(),
     );
     if (value != null && mounted) {
@@ -204,13 +203,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _chooseCity(BuildContext context) async {
     if (_country == null) return;
     final l = AppLocalizations.of(context)!;
+    final ar = Localizations.localeOf(context).languageCode == 'ar';
+    final cities = await _loadCities(context, l, _country!);
+    if (cities == null) return;
     final value = await showSelectionBottomSheet<String>(
       context: context,
       title: l.chooseCity,
       selectedValue: _city,
-      items: CountryCityData.citiesFor(
-        _country!,
-      ).map((city) => SelectionItem(value: city, label: city)).toList(),
+      items: cities
+          .map((city) => SelectionItem(
+                value: city.nameAr,
+                label: ar ? city.nameAr : city.nameEn,
+              ))
+          .toList(),
     );
     if (value != null && mounted) setState(() => _city = value);
   }
@@ -300,6 +305,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<List<Country>?> _loadCountries(
+      BuildContext context, AppLocalizations l) async {
+    try {
+      return await LocationService.getCountries();
+    } catch (e) {
+      debugPrint('LocationService.getCountries error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l.unexpectedError), backgroundColor: AppColors.error),
+        );
+      }
+      return null;
+    }
+  }
+
+  Future<List<City>?> _loadCities(
+      BuildContext context, AppLocalizations l, String countryCode) async {
+    try {
+      return await LocationService.getCities(countryCode);
+    } catch (e) {
+      debugPrint('LocationService.getCities($countryCode) error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l.unexpectedError), backgroundColor: AppColors.error),
+        );
+      }
+      return null;
     }
   }
 }

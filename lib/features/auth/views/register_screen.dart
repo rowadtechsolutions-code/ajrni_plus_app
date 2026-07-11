@@ -15,6 +15,7 @@ import '../../../core/widgets/my_button.dart';
 import '../../../core/widgets/my_lable_text_fild.dart';
 import '../../../core/widgets/selection_bottom_sheet.dart';
 import '../../../data/country_city_data.dart';
+import '../../location/services/location_service.dart';
 import '../services/auth_service.dart';
 import '../helpers/auth_error_mapper.dart';
 import 'login_screen.dart';
@@ -306,24 +307,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _countryLabel(BuildContext context) {
     if (_country == null) return '';
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    return CountryCityData.countryList.firstWhere(
-      (item) => item['key'] == _country,
-    )[isArabic ? 'name_ar' : 'name_en']!;
+    return LocationService.countryName(_country!, isArabic);
   }
 
   Future<void> _chooseCountry(BuildContext context) async {
+    final l = AppLocalizations.of(context)!;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final countries = await _loadCountries(context, l);
+    if (countries == null) return;
     final selected = await showSelectionBottomSheet<String>(
       context: context,
-      title: AppLocalizations.of(context)!.chooseCountry,
+      title: l.chooseCountry,
       selectedValue: _country,
-      items: CountryCityData.countryList
-          .map(
-            (item) => SelectionItem(
-              value: item['key']!,
-              label: item[isArabic ? 'name_ar' : 'name_en']!,
-            ),
-          )
+      items: countries
+          .map((item) => SelectionItem(
+                value: item.code,
+                label: isArabic ? item.nameAr : item.nameEn,
+              ))
           .toList(),
     );
     if (selected != null && mounted) {
@@ -340,13 +340,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _showMessage(l.chooseCountry, AppColors.error);
       return;
     }
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final cities = await _loadCities(context, l, _country!);
+    if (cities == null) return;
     final selected = await showSelectionBottomSheet<String>(
       context: context,
       title: l.chooseCity,
       selectedValue: _city,
-      items: CountryCityData.citiesFor(
-        _country!,
-      ).map((city) => SelectionItem(value: city, label: city)).toList(),
+      items: cities
+          .map((city) => SelectionItem(
+                value: city.nameAr,
+                label: isArabic ? city.nameAr : city.nameEn,
+              ))
+          .toList(),
     );
     if (selected != null && mounted) setState(() => _city = selected);
   }
@@ -432,6 +438,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message), backgroundColor: color));
+  }
+
+  Future<List<Country>?> _loadCountries(
+      BuildContext context, AppLocalizations l) async {
+    try {
+      return await LocationService.getCountries();
+    } catch (e) {
+      debugPrint('LocationService.getCountries error: $e');
+      _showMessage(l.unexpectedError, AppColors.error);
+      return null;
+    }
+  }
+
+  Future<List<City>?> _loadCities(
+      BuildContext context, AppLocalizations l, String countryCode) async {
+    try {
+      return await LocationService.getCities(countryCode);
+    } catch (e) {
+      debugPrint('LocationService.getCities($countryCode) error: $e');
+      _showMessage(l.unexpectedError, AppColors.error);
+      return null;
+    }
   }
 
   void _showPhoneInfoDialog(BuildContext context, AppLocalizations l) {
